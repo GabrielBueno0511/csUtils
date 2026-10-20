@@ -89,6 +89,18 @@ export class SupabaseService implements OnDestroy {
     return data.session ? { user: this.authUser(data.session.user) } : { user: null, confirmationRequired: true };
   }
 
+  async sendPasswordReset(email: string): Promise<void> {
+    const { error } = await this.client.auth.resetPasswordForEmail(email.trim(), {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    this.fail(error);
+  }
+
+  async updatePassword(password: string): Promise<void> {
+    const { error } = await this.client.auth.updateUser({ password });
+    this.fail(error);
+  }
+
   async logout(): Promise<void> {
     const { error } = await this.client.auth.signOut({ scope: 'local' });
     this.fail(error);

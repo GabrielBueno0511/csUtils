@@ -14,6 +14,7 @@ button:disabled { opacity: .5; cursor: default; }
 .error { color: var(--danger); }
 .switch { margin-top: 24px; text-align: center; }
 .switch a { color: var(--accent-primary); }
+.forgot-link { margin: 8px 0 -12px; font-size: .8rem; }
 .confirmation { text-align: center; }
 .confirmation-icon { display: grid; place-items: center; width: 64px; height: 64px; margin: 28px auto 20px; border: 1px solid var(--accent-primary); border-radius: 50%; color: var(--accent-primary); font-size: 1.8rem; }
 .confirmation .eyebrow { color: var(--accent-primary); font-size: .7rem; font-weight: 700; letter-spacing: .16em; }

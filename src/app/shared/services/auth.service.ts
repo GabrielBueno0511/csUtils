@@ -46,6 +46,20 @@ export class AuthService {
     return this.authenticate('register', { name, email, password });
   }
 
+  sendPasswordReset(email: string): Observable<void> {
+    if (!this.supabase.enabled) return throwError(() => new HttpErrorResponse({
+      status: 501, error: { error: 'A recuperação de senha por e-mail requer o modo Supabase.' },
+    }));
+    return defer(() => this.supabase.sendPasswordReset(email));
+  }
+
+  updatePassword(password: string): Observable<void> {
+    if (!this.supabase.enabled) return throwError(() => new HttpErrorResponse({
+      status: 501, error: { error: 'A troca de senha pelo link de recuperação requer o modo Supabase.' },
+    }));
+    return defer(() => this.supabase.updatePassword(password));
+  }
+
   logout(): Observable<unknown> {
     if (this.supabase.enabled) return defer(() => this.supabase.logout()).pipe(tap(() => this.clear()));
     return this.http.post('/api/auth/logout', {}).pipe(timeout(15000), tap(() => this.clear()));

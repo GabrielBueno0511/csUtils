@@ -4,6 +4,8 @@ import { authGuard } from './shared/guards/auth.guard';
 export const routes: Routes = [
     { path: 'login', loadComponent: () => import('./features/auth/auth').then(m => m.AuthComponent) },
     { path: 'register', data: { registering: true }, loadComponent: () => import('./features/auth/auth').then(m => m.AuthComponent) },
+    { path: 'forgot-password', loadComponent: () => import('./features/auth/password-recovery').then(m => m.PasswordRecoveryComponent) },
+    { path: 'reset-password', data: { settingNewPassword: true }, loadComponent: () => import('./features/auth/password-recovery').then(m => m.PasswordRecoveryComponent) },
     {
         path: '',
         loadComponent: () =>

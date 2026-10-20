@@ -34,6 +34,7 @@
       @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
       <button type="submit" [disabled]="form.invalid || busy()">{{ busy() ? 'Aguarde…' : registering ? 'Criar conta' : 'Entrar' }}</button>
     </form>
+    @if (!registering) { <p class="switch forgot-link"><a routerLink="/forgot-password">Esqueci minha senha</a></p> }
     <p class="switch">{{ registering ? 'Já tem uma conta?' : 'Ainda não tem conta?' }}
       <a [routerLink]="registering ? '/login' : '/register'" [queryParams]="{ returnUrl: returnUrl }">{{ registering ? 'Entrar' : 'Criar conta' }}</a>
     </p>
