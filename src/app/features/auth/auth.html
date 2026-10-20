@@ -2,6 +2,19 @@
   <a routerLink="/" class="back">← Voltar aos mapas</a>
   <section class="auth-card" aria-labelledby="auth-title">
     <span class="brand">CS Utils / Conta do jogador</span>
+    @if (confirmationPending()) {
+      <div class="confirmation" role="status" aria-live="polite">
+        <span class="confirmation-icon" aria-hidden="true">✉</span>
+        <p class="eyebrow">SÓ FALTA UM PASSO</p>
+        <h1 id="auth-title">Confirme seu e-mail</h1>
+        <p>Enviamos um link de confirmação para:</p>
+        <p class="confirmation-email">{{ confirmationEmail() }}</p>
+        <p>Abra a mensagem e clique no link para ativar sua conta. Depois, volte aqui para entrar.</p>
+        <p class="mail-hint">Não encontrou? Confira a pasta de spam ou lixo eletrônico.</p>
+        <a class="primary-link" routerLink="/login" [queryParams]="{ returnUrl: returnUrl }">Ir para entrar</a>
+        <p class="switch">Usou o endereço errado? <a routerLink="/register" [queryParams]="{ returnUrl: returnUrl }">Criar conta novamente</a></p>
+      </div>
+    } @else {
     <h1 id="auth-title">{{ registering ? 'Crie sua conta' : 'Entre na sua conta' }}</h1>
     <p>Salve seus pixels e compartilhe os melhores smokes.</p>
     <form #form="ngForm" (ngSubmit)="submit()">
@@ -18,12 +31,12 @@
         <label for="confirm-password">Confirme a senha</label>
         <input id="confirm-password" name="confirmPassword" type="password" [(ngModel)]="confirmPassword" required minlength="10" maxlength="128" autocomplete="new-password" />
       }
-      @if (notice()) { <p role="status">{{ notice() }}</p> }
       @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
       <button type="submit" [disabled]="form.invalid || busy()">{{ busy() ? 'Aguarde…' : registering ? 'Criar conta' : 'Entrar' }}</button>
     </form>
     <p class="switch">{{ registering ? 'Já tem uma conta?' : 'Ainda não tem conta?' }}
       <a [routerLink]="registering ? '/login' : '/register'" [queryParams]="{ returnUrl: returnUrl }">{{ registering ? 'Entrar' : 'Criar conta' }}</a>
     </p>
+    }
   </section>
 </main>
