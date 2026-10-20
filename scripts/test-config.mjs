@@ -22,3 +22,16 @@ test('administrative credentials are never included in the browser config', () =
   assert.deepEqual(Object.keys(settings),['backend','supabaseUrl','supabasePublishableKey']);
   assert.equal(JSON.stringify(settings).includes('private-'),false);
 });
+
+test('explains missing/invalid URLs without exposing the provided value', () => {
+  assert.throws(() => buildSettings({VERCEL:'1'}), /SUPABASE_URL não configurada/);
+  for (const value of ['not-a-url', '"https://example.supabase.co"']) {
+    assert.throws(() => buildSettings({...base,SUPABASE_URL:value}), /SUPABASE_URL inválida/);
+  }
+  for (const value of ['https://user:secret@example.supabase.co','https://example.supabase.co/rest/v1','https://example.supabase.co?token=secret']) {
+    assert.throws(() => buildSettings({...base,SUPABASE_URL:value}), /somente a origem/);
+  }
+  const settings = buildSettings({...base,SUPABASE_URL:'  https://example.supabase.co/ \n',SUPABASE_PUBLISHABLE_KEY:' sb_publishable_example \n'});
+  assert.equal(settings.supabaseUrl,'https://example.supabase.co');
+  assert.equal(settings.supabasePublishableKey,'sb_publishable_example');
+});

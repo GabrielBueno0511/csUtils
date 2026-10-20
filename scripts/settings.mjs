@@ -6,9 +6,21 @@ export function buildSettings(env) {
   }
   const config = { backend, supabaseUrl: '', supabasePublishableKey: '' };
   if (backend === 'supabase') {
-    config.supabaseUrl = env.SUPABASE_URL || '';
-    config.supabasePublishableKey = env.SUPABASE_PUBLISHABLE_KEY || env.SUPABASE_ANON_KEY || '';
-    const url = new URL(config.supabaseUrl);
+    config.supabaseUrl = (env.SUPABASE_URL || '').trim();
+    config.supabasePublishableKey = (env.SUPABASE_PUBLISHABLE_KEY || env.SUPABASE_ANON_KEY || '').trim();
+    if (!config.supabaseUrl) {
+      throw new Error('SUPABASE_URL não configurada. Na Vercel, adicione a URL HTTPS do projeto em Settings > Environment Variables e refaça o deploy.');
+    }
+    let url;
+    try {
+      url = new URL(config.supabaseUrl);
+    } catch {
+      throw new Error('SUPABASE_URL inválida. Use a URL completa do projeto, como https://SEU-PROJETO.supabase.co, sem aspas.');
+    }
+    if (url.username || url.password || url.search || url.hash || url.pathname !== '/') {
+      throw new Error('SUPABASE_URL deve conter somente a origem do projeto, sem credenciais, caminho, query ou fragmento.');
+    }
+    config.supabaseUrl = url.origin;
     if (url.protocol !== 'https:' && !(url.protocol === 'http:' && ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname))) {
       throw new Error('Use HTTPS no Supabase remoto ou HTTP somente no localhost.');
     }
