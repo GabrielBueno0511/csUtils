@@ -1,0 +1,120 @@
+<section class="spot-utils" id="spot-utils-page">
+    <header class="spot-utils__header">
+        <a [routerLink]="['/map', mapId()]" class="spot-utils__back" id="btn-back-map">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="spot-utils__back-icon">
+                <path d="M19 12H5" />
+                <path d="m12 19-7-7 7-7" />
+            </svg>
+            <span>Voltar</span>
+        </a>
+
+        @if (spotData(); as spot) {
+        <div class="spot-utils__title-group">
+            <p class="eyebrow">ARQUIVO TÁTICO / PIXELS</p>
+            <h1 class="spot-utils__title">{{ spot.name }}</h1>
+            <p class="spot-utils__subtitle">Lista de utilitárias para esta posição</p>
+        </div>
+        } @else {
+        <div class="spot-utils__title-group">
+            <p class="eyebrow">ARQUIVO TÁTICO / PIXELS</p>
+            <h1 class="spot-utils__title">Utilitárias</h1>
+        </div>
+        }
+    </header>
+
+    <section class="spot-filters" aria-label="Filtrar spots">
+        <div class="spot-filters__fields">
+            <label for="filter-author">Criado por
+                <input id="filter-author" type="search" placeholder="Nome do autor" [ngModel]="authorFilter()" (ngModelChange)="authorFilter.set($event)" />
+            </label>
+            <label for="filter-name">Nome do spot
+                <input id="filter-name" type="search" placeholder="Nome dado ao spot" [ngModel]="nameFilter()" (ngModelChange)="nameFilter.set($event)" />
+            </label>
+            <label for="filter-throw">Tipo de arremesso
+                <select id="filter-throw" [ngModel]="throwFilter()" (ngModelChange)="throwFilter.set($event)">
+                    <option value="">Todos os tipos</option>
+                    @for (option of throwOptions(); track option.value) {
+                    <option [value]="option.value">{{ option.label }}</option>
+                    }
+                </select>
+            </label>
+        </div>
+        <div class="spot-filters__summary">
+            <span aria-live="polite">{{ isLoadingUtils() ? 'Carregando spots…' : filteredUtilities().length + ' de ' + savedUtilities().length + ' spots' }}</span>
+            <button type="button" (click)="clearFilters()" [disabled]="!hasFilters()">Limpar filtros</button>
+        </div>
+    </section>
+
+    @if (deleteError()) { <p class="spot-delete-error" role="alert">{{ deleteError() }}</p> }
+    @if (favoriteError() || favorites.error()) { <p class="spot-delete-error" role="alert">{{ favoriteError() || favorites.error() }}</p> }
+    <div class="spot-utils__list">
+        @if (isLoadingUtils()) {
+        <div class="spot-utils__empty">
+            <p>Buscando utilitárias na base de dados...</p>
+        </div>
+        } @else if (filteredUtilities().length > 0) {
+        @for (util of filteredUtilities(); track util.id) {
+        <div class="util-card" [id]="'util-card-' + util.id">
+            <div class="util-card__header">
+                <h2 class="util-card__identifier">{{ util.identifier }}</h2>
+                <span class="util-card__throw-badge">{{ formatThrowType(util.throwType) }}</span>
+            </div>
+
+            <p class="util-card__author">{{ util.authorName ? 'Criado por ' + util.authorName : 'Autor não informado' }}</p>
+
+            <div class="favorite-actions">
+                @if (auth.user()) {
+                <button type="button" class="favorite-button" [class.is-favorite]="favorites.isFavorite(+util.id)" [attr.aria-pressed]="favorites.isFavorite(+util.id)" [disabled]="favorites.loading() || favorites.isBusy(+util.id)" (click)="toggleFavorite(util)">
+                    <span aria-hidden="true">{{ favorites.isFavorite(+util.id) ? '★' : '☆' }}</span>
+                    {{ favorites.isBusy(+util.id) ? 'Salvando…' : favorites.isFavorite(+util.id) ? 'Favoritado' : 'Favoritar' }}
+                </button>
+                } @else {
+                <a class="favorite-button" routerLink="/login" [queryParams]="{ returnUrl: '/map/' + mapId() + '/spot/' + spotNameId() }">☆ Entre para favoritar</a>
+                }
+            </div>
+            @if (canDelete(util)) {
+            <div class="util-card__delete">
+                @if (pendingDelete() === util.id) {
+                <span>Apagar este spot? Esta ação não pode ser desfeita.</span>
+                <button type="button" (click)="pendingDelete.set(null)" [disabled]="deletingId() !== null">Cancelar</button>
+                <button type="button" class="delete-confirm" (click)="deleteUtility(util)" [disabled]="deletingId() !== null">{{ deletingId() === util.id ? 'Apagando…' : 'Confirmar exclusão' }}</button>
+                } @else {
+                <button type="button" (click)="requestDelete(util)" [disabled]="deletingId() !== null" [attr.aria-label]="'Apagar spot ' + util.identifier">Apagar spot</button>
+                }
+            </div>
+            }
+
+            <div class="util-card__images">
+                <!-- Posição -->
+                <div class="util-card__img-container">
+                    <span class="util-card__img-label">Posição do Boneco</span>
+                    <img [src]="util.positionImageUrl" alt="Posição do boneco" class="util-card__img" loading="lazy" />
+                </div>
+
+                <!-- Mira -->
+                <div class="util-card__img-container">
+                    <span class="util-card__img-label">Onde Mirar</span>
+                    <img [src]="util.crosshairImageUrl" alt="Onde mirar (crosshair)" class="util-card__img"
+                        loading="lazy" />
+                </div>
+            </div>
+        </div>
+        }
+        } @else if (savedUtilities().length > 0) {
+        <div class="spot-utils__empty">
+            <p>Nenhum spot corresponde aos filtros. Altere a busca ou limpe os filtros.</p>
+            <button type="button" class="spot-utils__create-empty-btn" (click)="clearFilters()">Limpar filtros</button>
+        </div>
+        } @else {
+        <div class="spot-utils__empty">
+            <p>Nenhuma utilitária encontrada para este spot.</p>
+            @if (auth.user()) {
+            <a routerLink="/create-spot" class="spot-utils__create-empty-btn">Criar a Primeira!</a>
+            } @else {
+            <a routerLink="/login" [queryParams]="{ returnUrl: '/create-spot' }" class="spot-utils__create-empty-btn">Entre para criar um spot</a>
+            }
+        </div>
+        }
+    </div>
+</section>

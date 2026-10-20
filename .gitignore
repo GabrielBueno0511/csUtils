@@ -42,3 +42,12 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# Local credentials and generated public configuration
+.env
+.env.*
+!.env.example
+/public/app-config.json
+/supabase/.temp/
+/supabase/.branches/
+/users-map.json

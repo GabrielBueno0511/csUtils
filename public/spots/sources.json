@@ -1,0 +1,344 @@
+{
+  "dust2": {
+    "escuro-baixo": {
+      "image": "spots/dust2/buraco.png",
+      "imageLabel": "Lower Tunnels",
+      "imageIsOverview": false,
+      "sourcePage": "https://profilerr.net/dust-2-callouts-explanation-for-all-dust-2-callouts-in-csgo/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/1120x836/4/b3/csn3w4---c560x418x50px50p--dde1b227afdb6c6257528dd89ed77b34.png"
+    },
+    "escuro-alto": {
+      "image": "spots/dust2/escuro-alto.png",
+      "imageLabel": "Upper Tunnels (Right & Left)",
+      "imageIsOverview": false,
+      "sourcePage": "https://profilerr.net/dust-2-callouts-explanation-for-all-dust-2-callouts-in-csgo/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/1120x676/d/c3/k7xz2a---c560x338x50px50p--ca0f0d358c3129052993129d89513c3d.png"
+    },
+    "porta-do-b": {
+      "image": "spots/dust2/porta-do-b.png",
+      "imageLabel": "B Doors",
+      "imageIsOverview": false,
+      "sourcePage": "https://profilerr.net/dust-2-callouts-explanation-for-all-dust-2-callouts-in-csgo/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/1120x692/1/2b/xqno33---c560x346x50px50p--09ed6af62467dd0def4b7476a75662b1.png"
+    },
+    "porta-meio": {
+      "image": "spots/dust2/porta-meio.png",
+      "imageLabel": "Mid Doors",
+      "imageIsOverview": false,
+      "sourcePage": "https://profilerr.net/dust-2-callouts-explanation-for-all-dust-2-callouts-in-csgo/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/1120x822/9/65/cuoogx---c560x411x50px50p--4b96154911b4c7040d4514a884bf3659.png"
+    },
+    "rampa-da-a": {
+      "image": "spots/dust2/rampa-da-a.png",
+      "imageLabel": "A Ramp",
+      "imageIsOverview": false,
+      "sourcePage": "https://profilerr.net/dust-2-callouts-explanation-for-all-dust-2-callouts-in-csgo/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/1120x714/9/73/x7n2yc---c560x357x50px50p--95897252147fa6eb966287c2b14bb739.png"
+    },
+    "varanda-pro-a": {
+      "image": "spots/dust2/varanda.png",
+      "imageLabel": "A Short/Bridge",
+      "imageIsOverview": false,
+      "sourcePage": "https://profilerr.net/dust-2-callouts-explanation-for-all-dust-2-callouts-in-csgo/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/1120x806/b/cc/2ha4py---c560x403x50px50p--b9f4dd783b9ac1f8ad3d4d06e26e0ccb.png"
+    },
+    "varanda-meio": {
+      "image": "spots/dust2/varanda-meio.png",
+      "imageLabel": "Catwalk",
+      "imageIsOverview": false,
+      "sourcePage": "https://profilerr.net/dust-2-callouts-explanation-for-all-dust-2-callouts-in-csgo/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/1120x654/2/61/fngdeo---c560x327x50px50p--92bac80cc044bf1ed8d0b334724cf612.png"
+    },
+    "fundo": {
+      "image": "spots/dust2/fundo.png",
+      "imageLabel": "A Long",
+      "imageIsOverview": false,
+      "sourcePage": "https://profilerr.net/dust-2-callouts-explanation-for-all-dust-2-callouts-in-csgo/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/1120x664/b/5d/hdqdhv---c560x332x50px50p--42ff74a4bbf25601ab328a4d47b295db.png"
+    },
+    "caixa-do-meio": {
+      "image": "spots/dust2/caixa-do-meio.png",
+      "imageLabel": "Xbox",
+      "imageIsOverview": false,
+      "sourcePage": "https://profilerr.net/dust-2-callouts-explanation-for-all-dust-2-callouts-in-csgo/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/1120x772/7/61/d3iwh3---c560x386x50px50p--bb0f0881c0a15be470f2940175c3e617.png"
+    }
+  },
+  "mirage": {
+    "janela": {
+      "image": "spots/mirage/janela.png",
+      "imageLabel": "Sniper’s Nest",
+      "imageIsOverview": false,
+      "sourcePage": "https://profilerr.net/all-mirage-callouts/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/880x/8/2a/dnkw3x-5f68745ee37307c83c908610a9f0d2a8.png"
+    },
+    "l": {
+      "image": "spots/mirage/l.png",
+      "imageLabel": "Jungle",
+      "imageIsOverview": true,
+      "sourcePage": "https://profilerr.net/all-mirage-callouts/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/880x/f/a6/spn6qe-611c773575d53cb25c15eeceb3998a6f.png"
+    },
+    "ligacao": {
+      "image": "spots/mirage/ligacao.png",
+      "imageLabel": "Connector",
+      "imageIsOverview": false,
+      "sourcePage": "https://profilerr.net/all-mirage-callouts/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/880x/b/b5/hvs43v-1f7f7b64382745e1ed4d352d40a9fb5b.png"
+    },
+    "caverna": {
+      "image": "spots/mirage/caverna.png",
+      "imageLabel": "Underpass",
+      "imageIsOverview": false,
+      "sourcePage": "https://profilerr.net/all-mirage-callouts/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/880x/9/1a/pjjg2q-ca620ca3845c81d391ad46cf97eb71a9.png"
+    },
+    "palacio": {
+      "image": "spots/mirage/palacio.png",
+      "imageLabel": "Palace",
+      "imageIsOverview": false,
+      "sourcePage": "https://profilerr.net/all-mirage-callouts/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/880x/2/d2/2iuhj5-c52c7c92d7848f3b2c75dfa4a8db1d22.png"
+    },
+    "tapete": {
+      "image": "spots/mirage/tapete.png",
+      "imageLabel": "Palace",
+      "imageIsOverview": true,
+      "sourcePage": "https://profilerr.net/all-mirage-callouts/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/880x/2/d2/2iuhj5-c52c7c92d7848f3b2c75dfa4a8db1d22.png"
+    },
+    "ct": {
+      "image": "spots/mirage/ct.png",
+      "imageLabel": "Ticket",
+      "imageIsOverview": false,
+      "sourcePage": "https://profilerr.net/all-mirage-callouts/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/880x/4/87/a6o2w3-ca2a6326fc36562e8ce1e12b6dd9b874.png"
+    },
+    "cabecinha": {
+      "image": "spots/mirage/cabecinha.png",
+      "imageLabel": "Stairs",
+      "imageIsOverview": true,
+      "sourcePage": "https://profilerr.net/all-mirage-callouts/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/880x/d/90/fnx74m-35b52fa077c234bfd4e7aff2cf2f990d.png"
+    },
+    "passagem": {
+      "image": "spots/mirage/passagem.png",
+      "imageLabel": "B-Short",
+      "imageIsOverview": true,
+      "sourcePage": "https://profilerr.net/all-mirage-callouts/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/880x/e/c0/7yde2f-ae5cbfa2ae5ee0b0fa140f9121f7bc0e.png"
+    },
+    "mercado": {
+      "image": "spots/mirage/mercado.png",
+      "imageLabel": "Market",
+      "imageIsOverview": false,
+      "sourcePage": "https://profilerr.net/all-mirage-callouts/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/880x/a/23/dwkmqv-fce8b481634b49db77af65b3d0c5923a.png"
+    },
+    "edward": {
+      "image": "spots/mirage/edward.png",
+      "imageLabel": "Bench",
+      "imageIsOverview": true,
+      "sourcePage": "https://profilerr.net/all-mirage-callouts/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/880x/7/61/7qqove-2a144f29f1ad89881e10c6a7a1525617.png"
+    }
+  },
+  "inferno": {
+    "banana": {
+      "image": "spots/inferno/banana.png",
+      "imageLabel": "BANANA",
+      "imageIsOverview": false,
+      "sourcePage": "https://profilerr.net/inferno-callouts-explanation-for-all-inferno-map-callouts/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/1120x676/1/ea/ctusor---c560x338x50px50p--3200da7840ccb96e2fc88ebecdc29ea1.png"
+    },
+    "ct-da-b": {
+      "image": "spots/inferno/ct-da-b.png",
+      "imageLabel": "CT",
+      "imageIsOverview": false,
+      "sourcePage": "https://profilerr.net/inferno-callouts-explanation-for-all-inferno-map-callouts/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/1120x686/1/b6/gg6gvd---c560x343x50px50p--69849cb9bb91e3ec0d5700afacd5ab61.png"
+    },
+    "biblioteca": {
+      "image": "spots/inferno/biblioteca.png",
+      "imageLabel": "LIBRARY",
+      "imageIsOverview": false,
+      "sourcePage": "https://profilerr.net/inferno-callouts-explanation-for-all-inferno-map-callouts/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/1120x686/1/ca/yrtkll---c560x343x50px50p--5f152f2d9e54b56c14ecbd5660361ca1.png"
+    },
+    "caixao": {
+      "image": "spots/inferno/caixao.png",
+      "imageLabel": "COFFINS",
+      "imageIsOverview": false,
+      "sourcePage": "https://profilerr.net/inferno-callouts-explanation-for-all-inferno-map-callouts/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/1120x680/2/88/kmmif6---c560x340x50px50p--ebf2cefd22867d1ceb182c97dd87c882.png"
+    },
+    "tripla": {
+      "image": "spots/inferno/tripla.png",
+      "imageLabel": "TRIPLE/NEW BOX",
+      "imageIsOverview": false,
+      "sourcePage": "https://profilerr.net/inferno-callouts-explanation-for-all-inferno-map-callouts/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/1120x696/0/68/m7kd3x---c560x348x50px50p--e68ce29b646a126709d2e523ffe33680.png"
+    },
+    "carro": {
+      "image": "spots/inferno/carro.png",
+      "imageLabel": "CAR",
+      "imageIsOverview": false,
+      "sourcePage": "https://profilerr.net/inferno-callouts-explanation-for-all-inferno-map-callouts/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/1120x674/e/d3/fvmya6---c560x337x50px50p--7643a7c1b504fb22555e8a2dacb2ad3e.png"
+    },
+    "arco-ct": {
+      "image": "spots/inferno/arco-ct.png",
+      "imageLabel": "ARCH",
+      "imageIsOverview": false,
+      "sourcePage": "https://profilerr.net/inferno-callouts-explanation-for-all-inferno-map-callouts/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/1120x686/b/f6/hayooe---c560x343x50px50p--e92af74e5622c474405ba569aa6c4f6b.png"
+    }
+  },
+  "nuke": {
+    "janela": {
+      "image": "spots/nuke/janela.png",
+      "imageLabel": "Heaven Nuke CS2",
+      "imageIsOverview": true,
+      "sourcePage": "https://profilerr.net/nuke-callouts-explanation-for-all-nuke-map-callouts/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/1120x742/c/40/dkc37k---c560x371x50px50p--8aee5c36a5e5551993aed60b64ff140c.png"
+    },
+    "cabecinha": {
+      "image": "spots/nuke/cabecinha.png",
+      "imageLabel": "HS (Headshot) Nuke CS2",
+      "imageIsOverview": false,
+      "sourcePage": "https://profilerr.net/nuke-callouts-explanation-for-all-nuke-map-callouts/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/1120x754/2/31/6azvij---c560x377x50px50p--864b4436e770705677ab655a05ffb312.png"
+    },
+    "fundo": {
+      "image": "spots/nuke/fundo.png",
+      "imageLabel": "Dark Nuke CS2",
+      "imageIsOverview": true,
+      "sourcePage": "https://profilerr.net/nuke-callouts-explanation-for-all-nuke-map-callouts/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/1120x766/1/81/ubtljq---c560x383x50px50p--d66054a912b660559228ff891b75d811.png"
+    },
+    "xbox": {
+      "image": "spots/nuke/xbox.png",
+      "imageLabel": "Outside Boxes Nuke CS2",
+      "imageIsOverview": true,
+      "sourcePage": "https://profilerr.net/nuke-callouts-explanation-for-all-nuke-map-callouts/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/1120x668/0/ae/adwrxy---c560x334x50px50p--1e16da8f448cbc017a073debfebedae0.png"
+    },
+    "varanda": {
+      "image": "spots/nuke/varanda.png",
+      "imageLabel": "Catwalk Nuke CS2",
+      "imageIsOverview": false,
+      "sourcePage": "https://profilerr.net/nuke-callouts-explanation-for-all-nuke-map-callouts/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/1120x862/4/bc/hkcyxw---c560x431x50px50p--f1c06c2cc727f69762ee3027dd90fbc4.png"
+    }
+  },
+  "ancient": {
+    "janela-meio": {
+      "image": "spots/ancient/janela-meio.webp",
+      "imageLabel": "Sniper’s Nest callout on Ancient in CS2",
+      "imageIsOverview": false,
+      "sourcePage": "https://profilerr.net/ancient-callouts-explanation-guide-screenshots-of-each-place/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/880x/a/45/lybgli-1c884bedd3f92ad29301f9111c84345a.webp"
+    },
+    "rampa-b": {
+      "image": "spots/ancient/rampa-b.webp",
+      "imageLabel": "Ramp callout on Ancient in CS2",
+      "imageIsOverview": false,
+      "sourcePage": "https://profilerr.net/ancient-callouts-explanation-guide-screenshots-of-each-place/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/880x/7/0d/eoz2q7-52761ffa4ca38d16c6ddbebe4f7a70d7.webp"
+    },
+    "templo-a": {
+      "image": "spots/ancient/templo-a.webp",
+      "imageLabel": "Temple callout on Ancient in CS2",
+      "imageIsOverview": false,
+      "sourcePage": "https://profilerr.net/ancient-callouts-explanation-guide-screenshots-of-each-place/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/880x/2/ce/2e2y6h-e5275ed419b6946b8f9ec667c009ace2.webp"
+    },
+    "ct-da-a": {
+      "image": "spots/ancient/ct-da-a.webp",
+      "imageLabel": "CT Lane callout on Ancient in CS2",
+      "imageIsOverview": false,
+      "sourcePage": "https://profilerr.net/ancient-callouts-explanation-guide-screenshots-of-each-place/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/880x/5/20/pym6dm-4af14c29abc15a237025f71414e50205.webp"
+    }
+  },
+  "anubis": {
+    "meio": {
+      "image": "spots/anubis/meio.png",
+      "imageLabel": "Top Mid Anubis Callout",
+      "imageIsOverview": false,
+      "sourcePage": "https://profilerr.net/cs2-anubis-callouts/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/880x/0/70/3bup2s-3b251577b41fe1e30855958e5b1c5700.png"
+    },
+    "buraco": {
+      "image": "spots/anubis/buraco.png",
+      "imageLabel": "Drop Anubis Callout",
+      "imageIsOverview": true,
+      "sourcePage": "https://profilerr.net/cs2-anubis-callouts/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/880x/a/19/6ox5os-7a4db0a3ef0482f27eb2eec84fb1b19a.png"
+    },
+    "rato": {
+      "image": "spots/anubis/rato.png",
+      "imageLabel": "Tunnel Anubis Callout",
+      "imageIsOverview": true,
+      "sourcePage": "https://profilerr.net/cs2-anubis-callouts/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/880x/1/a3/6hyapu-16086b935b55ba6b32b738a5d6aa1a31.png"
+    },
+    "nilo": {
+      "image": "spots/anubis/nilo.png",
+      "imageLabel": "Water Anubis Callout",
+      "imageIsOverview": false,
+      "sourcePage": "https://profilerr.net/cs2-anubis-callouts/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/880x/5/32/yhurot-9a5f6513a251fc1f297f36daaf87f325.png"
+    },
+    "escada-nilo": {
+      "image": "spots/anubis/escada-nilo.png",
+      "imageLabel": "Stairs Anubis Callout",
+      "imageIsOverview": false,
+      "sourcePage": "https://profilerr.net/cs2-anubis-callouts/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/880x/3/20/oj2hkf-c62d348048aeed3c116ea4ce5ccf2203.png"
+    },
+    "ceu-da-a": {
+      "image": "spots/anubis/ceu-da-a.png",
+      "imageLabel": "A Heaven Anubis Callout",
+      "imageIsOverview": false,
+      "sourcePage": "https://profilerr.net/cs2-anubis-callouts/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/880x/7/44/2w2wbd-2c1bac1758de1cdb12ebd58376dc0447.png"
+    },
+    "quebrao-a": {
+      "image": "spots/anubis/quebrao-a.png",
+      "imageLabel": "A Entrance Anubis Callout",
+      "imageIsOverview": true,
+      "sourcePage": "https://profilerr.net/cs2-anubis-callouts/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/880x/b/bd/2ayc74-17cb8067309315ae79c61f5ba06b6bdb.png"
+    },
+    "liga-meio-a": {
+      "image": "spots/anubis/liga-meio-a.png",
+      "imageLabel": "A Connector Anubis Callout",
+      "imageIsOverview": false,
+      "sourcePage": "https://profilerr.net/cs2-anubis-callouts/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/880x/7/b8/ww3zc4-7f03f84e409396dec448785988221b87.png"
+    },
+    "ct-da-b": {
+      "image": "spots/anubis/ct-da-b.png",
+      "imageLabel": "Street Anubis Callout",
+      "imageIsOverview": false,
+      "sourcePage": "https://profilerr.net/cs2-anubis-callouts/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/880x/f/af/wpn7sp-96df684d4ee8a7645b205d8f3ca5baff.png"
+    },
+    "insane": {
+      "image": "maps/anubis-overview.png",
+      "imageLabel": "Visão geral de Anubis",
+      "imageIsOverview": true,
+      "sourcePage": "https://profilerr.net/cs2-anubis-callouts/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/880x/1/f7/hc5tv4-be40e754ca3a84ca9c7b741763ddaf71.png"
+    },
+    "rato-pro-b": {
+      "image": "spots/anubis/rato-pro-b.png",
+      "imageLabel": "B Connector Anubis Callout",
+      "imageIsOverview": true,
+      "sourcePage": "https://profilerr.net/cs2-anubis-callouts/",
+      "sourceImage": "https://profilerr.net/static/content/thumbs/880x/1/b3/wlaxm4-f5f3c449329e4751509fd985c9f33b31.png"
+    }
+  },
+  "cache": {}
+}

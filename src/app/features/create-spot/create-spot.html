@@ -1,0 +1,153 @@
+<section class="create-spot" id="create-spot-page">
+    <header class="create-spot__header">
+        <a routerLink="/" class="create-spot__back" id="btn-back-home">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="create-spot__back-icon">
+                <path d="M19 12H5" />
+                <path d="m12 19-7-7 7-7" />
+            </svg>
+            <span>Voltar</span>
+        </a>
+        <div class="create-spot__title-group">
+            <p class="eyebrow">CONTRIBUIR / NOVO PIXEL</p>
+            <h1 class="create-spot__title">Criar Novo Spot</h1>
+            <p class="create-spot__subtitle">Adicione uma nova utilitária para a comunidade</p>
+        </div>
+    </header>
+
+    @if (submitted()) {
+    <div class="create-spot__success" id="success-message">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" class="create-spot__success-icon">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+            <path d="m9 11 3 3L22 4" />
+        </svg>
+        <h2>Spot criado com sucesso!</h2>
+        <p>Redirecionando para a página inicial...</p>
+    </div>
+    } @else {
+    <form class="create-spot__form" (ngSubmit)="onSubmit()" id="spot-form">
+
+        <!-- Seleção de Mapa -->
+        <div class="form-group" id="field-map">
+            <label class="form-group__label" for="select-map">Mapa</label>
+            <select class="form-group__select" id="select-map" [ngModel]="selectedMapId()"
+                (ngModelChange)="onMapChange($event)" name="mapId" required>
+                <option value="" disabled>Selecione o mapa</option>
+                @for (map of maps; track map.id) {
+                <option [value]="map.id">{{ map.name }}</option>
+                }
+            </select>
+        </div>
+
+        <!-- Identificador do Spot (ID) -->
+        <div class="form-group" id="field-spot-id">
+            <label class="form-group__label" for="input-spot-id">Identificador do Spot (ID)</label>
+            <input class="form-group__input" type="text" id="input-spot-id"
+                placeholder="Ex: spot gabriel A, pixel janela..." [ngModel]="spotId()"
+                (ngModelChange)="spotId.set($event)" name="spotId" required />
+        </div>
+
+        <!-- Nome do Spot (Local) -->
+        <div class="form-group" id="field-spot-name">
+            <label class="form-group__label" for="select-spot-name">Nome do Spot</label>
+            <select class="form-group__select" id="select-spot-name" [ngModel]="spotName()"
+                (ngModelChange)="spotName.set($event)" name="spotName" required>
+                <option value="" disabled>Selecione a posição base</option>
+                @for (opt of spotNames(); track opt.value) {
+                <option [value]="opt.value">{{ opt.label }}</option>
+                }
+            </select>
+        </div>
+
+        <!-- Tipo de Arremesso -->
+        <div class="form-group" id="field-throw-type">
+            <label class="form-group__label" for="select-throw-type">Tipo de Arremesso</label>
+            <select class="form-group__select" id="select-throw-type" [ngModel]="selectedThrowType()"
+                (ngModelChange)="selectedThrowType.set($event)" name="throwType" required>
+                @for (type of throwTypes; track type.value) {
+                <option [value]="type.value">{{ type.label }}</option>
+                }
+            </select>
+        </div>
+
+        <!-- Upload de Imagens -->
+        <div class="form-group__row">
+            <!-- Posição do Boneco -->
+            <div class="form-group" id="field-position-image">
+                <label class="form-group__label">Posição do Boneco</label>
+                <p class="form-group__hint">Onde o jogador deve ficar posicionado</p>
+                @if (positionImage(); as img) {
+                <div class="image-preview">
+                    <img [src]="img.url" alt="Preview posição" class="image-preview__img" />
+                    <button type="button" class="image-preview__remove" (click)="removeImage('position')"
+                        id="btn-remove-position">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 6 6 18" />
+                            <path d="m6 6 12 12" />
+                        </svg>
+                    </button>
+                </div>
+                } @else {
+                <label class="upload-area" for="input-position-image" id="upload-position">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="upload-area__icon">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="17 8 12 3 7 8" />
+                        <line x1="12" x2="12" y1="3" y2="15" />
+                    </svg>
+                    <span class="upload-area__text">Clique para enviar imagem</span>
+                    <span class="upload-area__hint">PNG, JPG ou WebP</span>
+                    <input type="file" id="input-position-image" accept="image/*" class="upload-area__input"
+                        (change)="onFileSelected($event, 'position')" />
+                </label>
+                }
+            </div>
+
+            <!-- Onde Mirar -->
+            <div class="form-group" id="field-crosshair-image">
+                <label class="form-group__label">Onde Mirar</label>
+                <p class="form-group__hint">A mira / crosshair no alvo</p>
+                @if (crosshairImage(); as img) {
+                <div class="image-preview">
+                    <img [src]="img.url" alt="Preview mira" class="image-preview__img" />
+                    <button type="button" class="image-preview__remove" (click)="removeImage('crosshair')"
+                        id="btn-remove-crosshair">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 6 6 18" />
+                            <path d="m6 6 12 12" />
+                        </svg>
+                    </button>
+                </div>
+                } @else {
+                <label class="upload-area" for="input-crosshair-image" id="upload-crosshair">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="upload-area__icon">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="17 8 12 3 7 8" />
+                        <line x1="12" x2="12" y1="3" y2="15" />
+                    </svg>
+                    <span class="upload-area__text">Clique para enviar imagem</span>
+                    <span class="upload-area__hint">PNG, JPG ou WebP</span>
+                    <input type="file" id="input-crosshair-image" accept="image/*" class="upload-area__input"
+                        (change)="onFileSelected($event, 'crosshair')" />
+                </label>
+                }
+            </div>
+        </div>
+
+        <!-- Botão Submit -->
+        <button type="submit" class="create-spot__submit" [disabled]="!isFormValid || isSubmitting()"
+            id="btn-submit-spot">
+            @if (isSubmitting()) {
+            <span class="create-spot__spinner"></span>
+            Salvando...
+            } @else {
+            Criar Spot
+            }
+        </button>
+    </form>
+    }
+</section>

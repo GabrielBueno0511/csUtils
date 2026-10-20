@@ -1,0 +1,29 @@
+<main class="auth-page">
+  <a routerLink="/" class="back">← Voltar aos mapas</a>
+  <section class="auth-card" aria-labelledby="auth-title">
+    <span class="brand">CS Utils / Conta do jogador</span>
+    <h1 id="auth-title">{{ registering ? 'Crie sua conta' : 'Entre na sua conta' }}</h1>
+    <p>Salve seus pixels e compartilhe os melhores smokes.</p>
+    <form #form="ngForm" (ngSubmit)="submit()">
+      @if (registering) {
+        <label for="name">Nome</label>
+        <input id="name" name="name" [(ngModel)]="name" required minlength="2" maxlength="80" autocomplete="name" />
+      }
+      <label for="email">E-mail</label>
+      <input id="email" name="email" type="email" [(ngModel)]="email" required email maxlength="254" autocomplete="email" />
+      <label for="password">Senha</label>
+      <input id="password" name="password" type="password" [(ngModel)]="password" required minlength="10" maxlength="128" [autocomplete]="registering ? 'new-password' : 'current-password'" aria-describedby="password-hint" />
+      <small id="password-hint">Use de 10 a 128 caracteres.</small>
+      @if (registering) {
+        <label for="confirm-password">Confirme a senha</label>
+        <input id="confirm-password" name="confirmPassword" type="password" [(ngModel)]="confirmPassword" required minlength="10" maxlength="128" autocomplete="new-password" />
+      }
+      @if (notice()) { <p role="status">{{ notice() }}</p> }
+      @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
+      <button type="submit" [disabled]="form.invalid || busy()">{{ busy() ? 'Aguarde…' : registering ? 'Criar conta' : 'Entrar' }}</button>
+    </form>
+    <p class="switch">{{ registering ? 'Já tem uma conta?' : 'Ainda não tem conta?' }}
+      <a [routerLink]="registering ? '/login' : '/register'" [queryParams]="{ returnUrl: returnUrl }">{{ registering ? 'Entrar' : 'Criar conta' }}</a>
+    </p>
+  </section>
+</main>

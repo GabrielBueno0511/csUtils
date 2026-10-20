@@ -1,0 +1,55 @@
+<section class="spots" id="map-spots-page">
+    <header class="spots__header">
+        <a routerLink="/" class="spots__back" id="btn-back-home">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="spots__back-icon">
+                <path d="M19 12H5" />
+                <path d="m12 19-7-7 7-7" />
+            </svg>
+            <span>Voltar</span>
+        </a>
+
+        @if (mapData(); as data) {
+        <div class="spots__title-group">
+            <p class="eyebrow">ARQUIVO TÁTICO / POSIÇÕES</p>
+            <h1 class="spots__title">{{ data.mapName }}</h1>
+            <p class="spots__subtitle">Selecione a posição para ver utilitárias</p>
+        </div>
+        }
+    </header>
+
+    @if (mapData(); as data) {
+    <div class="spots__grid">
+        @for (spot of data.spots; track spot.id) {
+        <button class="spot-card" [id]="'spot-card-' + spot.id" (click)="onSelectSpot(spot)">
+            <div class="spot-card__image-wrapper">
+                @if (!spot.imageNeedsConfirmation) {
+                <img [src]="spot.image" [alt]="data.mapName + ' — ' + spot.imageLabel" class="spot-card__image" loading="lazy" decoding="async" />
+                }
+                <div class="spot-card__glow"></div>
+            </div>
+            @if (spot.imageNeedsConfirmation) {
+            <span class="spot-card__confirmation">Imagem a adicionar</span>
+            }
+            <div class="spot-card__overlay">
+                <div class="spot-card__info">
+                    <span class="spot-card__name">{{ spot.name }}</span>
+                    <span class="spot-card__description">{{ spot.description }}</span>
+                </div>
+            </div>
+        </button>
+        } @empty {
+        <p class="spots__empty">As posições deste mapa ainda não foram cadastradas.</p>
+        }
+    </div>
+    @if (data.imageSourceUrl) {
+    <p class="spots__credits">Imagens de referência: <a [href]="data.imageSourceUrl" target="_blank" rel="noopener noreferrer">Profilerr — {{ data.mapName }}</a>.
+        As posições sem imagem serão preenchidas manualmente.</p>
+    }
+    } @else {
+    <div class="spots__empty">
+        <p>Mapa não encontrado.</p>
+        <a routerLink="/" class="spots__empty-link">Voltar para a seleção de mapas</a>
+    </div>
+    }
+</section>

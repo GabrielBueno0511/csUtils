@@ -1,0 +1,21 @@
+.favorites-heading { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 24px; }
+.favorites-heading h2 { font: 500 2rem var(--font-heading); margin-top: 6px; }
+.favorites-heading > span { color: var(--smoke-blue); font-size: .8rem; }
+.favorites-list { display: grid; gap: 24px; }
+.favorite-card { background: var(--card-bg); border: 1px solid var(--card-border); backdrop-filter: blur(14px); border-radius: 6px; padding: 24px; }
+.favorite-card header, .favorite-card footer { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+.favorite-card h3 { font: 500 1.8rem var(--font-heading); margin-top: 8px; overflow-wrap: anywhere; }
+.favorite-author { color: var(--text-secondary); font-size: .8rem; margin-top: 5px; }
+.throw-tag { color: #b8cad8; background: rgba(114,137,156,.12); padding: 6px 10px; border: 1px solid var(--card-border); border-radius: 4px; font-size: .75rem; }
+.favorite-images { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 24px; margin: 24px 0; }
+figcaption { font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: #b8cad8; margin-bottom: 8px; }
+.favorite-images img { width: 100%; aspect-ratio: 16 / 10; object-fit: contain; background: var(--bg-primary); border: 1px solid var(--card-border); border-radius: 4px; }
+.favorite-card footer > a { color: var(--accent-primary); font-size: .8rem; }
+.favorites-empty { text-align: center; padding: 48px 24px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 6px; color: var(--text-secondary); }
+.favorites-star { color: var(--accent-primary); font-size: 2.5rem; }
+.favorites-empty h3 { font: 500 2rem var(--font-heading); color: var(--text-primary); margin: 12px 0; }
+.favorites-empty p { max-width: 500px; margin: auto; font-size: .875rem; line-height: 1.7; }
+.favorites-empty a { display: inline-block; background: var(--accent-primary); color: var(--bg-primary); padding: 12px 18px; border-radius: 4px; font-size: .8rem; font-weight: 700; margin-top: 24px; }
+.favorites-error { color: var(--danger); margin-bottom: 20px; }
+.favorites-error button { background: transparent; border: 1px solid var(--card-border); color: var(--text-primary); border-radius: 4px; padding: 8px 12px; margin-left: 12px; cursor: pointer; }
+@media(max-width:640px) { .favorite-card { padding: 16px; } .favorite-images { grid-template-columns: 1fr; } .favorites-heading { align-items: flex-start; flex-direction: column; } }

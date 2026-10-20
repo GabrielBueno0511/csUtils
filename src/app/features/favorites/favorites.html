@@ -1,0 +1,28 @@
+<section aria-label="Seus spots favoritos">
+  <div class="favorites-heading"><div><p class="eyebrow">SEU ARQUIVO PESSOAL</p><h2>Seus favoritos</h2></div>
+    @if (auth.user() && !loading()) { <span>{{ utilities().length }} spots salvos</span> }
+  </div>
+  @if (!auth.user()) {
+    <div class="favorites-empty"><span class="favorites-star" aria-hidden="true">☆</span><h3>Seus pixels, a um clique.</h3><p>Entre na sua conta para salvar spots e acessá-los diretamente por aqui.</p><a routerLink="/login" [queryParams]="{ returnUrl: '/?tab=favorites' }">Entrar para ver favoritos</a></div>
+  } @else if (loading()) {
+    <p class="favorites-empty" role="status">Carregando seus favoritos…</p>
+  } @else {
+    @if (error()) { <div class="favorites-error" role="alert">{{ error() }} <button type="button" (click)="retry()">Tentar novamente</button></div> }
+    @if (utilities().length > 0) {
+      <div class="favorites-list">
+        @for (util of utilities(); track util.id) {
+          <article class="favorite-card">
+            <header><div><p class="eyebrow">{{ util.map_name }} / {{ util.spot_name }}</p><h3>{{ util.spot_id }}</h3><p class="favorite-author">{{ util.author_name ? 'Criado por ' + util.author_name : 'Autor não informado' }}</p></div><span class="throw-tag">{{ throwLabel(util.throw_type) }}</span></header>
+            <div class="favorite-images">
+              <figure><figcaption>Posição do boneco</figcaption><img [src]="util.player_position_image" alt="Posição do boneco" loading="lazy" /></figure>
+              <figure><figcaption>Onde mirar</figcaption><img [src]="util.aim_position_image" alt="Onde mirar" loading="lazy" /></figure>
+            </div>
+            <footer><a [routerLink]="['/map', util.map_name, 'spot', util.spot_name]">Ver posição no mapa ↗</a><button type="button" class="favorite-button is-favorite" (click)="remove(util)" [disabled]="removingId() !== null" [attr.aria-label]="'Remover dos favoritos: ' + util.spot_id"><span aria-hidden="true">★</span>{{ removingId() === util.id ? 'Removendo…' : 'Remover dos favoritos' }}</button></footer>
+          </article>
+        }
+      </div>
+    } @else if (!error()) {
+      <div class="favorites-empty"><span class="favorites-star" aria-hidden="true">☆</span><h3>Ainda não há favoritos.</h3><p>Encontre um pixel nos mapas e clique em “Favoritar”. Ele aparecerá aqui com as imagens de posição e mira.</p><a routerLink="/" [queryParams]="{ tab: 'maps' }">Explorar mapas</a></div>
+    }
+  }
+</section>

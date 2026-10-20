@@ -7,7 +7,17 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:csutils": "node dist/csutils/server/server.mjs"
+    "prestart": "node scripts/configure.mjs",
+    "prebuild": "node scripts/configure.mjs",
+    "prewatch": "node scripts/configure.mjs",
+    "supabase:start": "supabase start",
+    "supabase:stop": "supabase stop",
+    "supabase:status": "supabase status",
+    "supabase:push": "supabase db push",
+    "test:db": "node scripts/test-db.mjs",
+    "test:config": "node --test scripts/test-config.mjs",
+    "import:legacy": "node scripts/import-legacy.mjs",
+    "check:connection": "node scripts/check-connection.mjs"
   },
   "private": true,
   "packageManager": "npm@11.16.0",
@@ -20,6 +30,7 @@
     "@angular/platform-server": "^22.0.0",
     "@angular/router": "^22.0.0",
     "@angular/ssr": "^22.0.8",
+    "@supabase/supabase-js": "^2.118.0",
     "express": "^5.1.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
@@ -28,11 +39,16 @@
     "@angular/build": "^22.0.8",
     "@angular/cli": "^22.0.8",
     "@angular/compiler-cli": "^22.0.0",
+    "@electric-sql/pglite": "^0.5.10",
     "@types/express": "^5.0.1",
     "@types/node": "^20.17.19",
     "jsdom": "^28.0.0",
     "prettier": "^3.8.1",
+    "supabase": "^2.121.0",
     "typescript": "~6.0.2",
     "vitest": "^4.0.8"
+  },
+  "engines": {
+    "node": "24.x"
   }
 }

@@ -5,6 +5,8 @@ import {
   writeResponseToNodeResponse,
 } from '@angular/ssr/node';
 import express from 'express';
+import { request as httpRequest } from 'node:http';
+import { request as httpsRequest } from 'node:https';
 import { join } from 'node:path';
 
 const browserDistFolder = join(import.meta.dirname, '../browser');
@@ -12,17 +14,24 @@ const browserDistFolder = join(import.meta.dirname, '../browser');
 const app = express();
 const angularApp = new AngularNodeAppEngine();
 
-/**
- * Example Express Rest API endpoints can be defined here.
- * Uncomment and define endpoints as necessary.
- *
- * Example:
- * ```ts
- * app.get('/api/{*splat}', (req, res) => {
- *   // Handle API request
- * });
- * ```
- */
+// Keep browser API requests on the same origin so HttpOnly cookies work in production.
+const apiTarget = new URL(process.env['API_URL'] || 'http://127.0.0.1:5001');
+app.use('/api', (req, res) => {
+  const upstream = (apiTarget.protocol === 'https:' ? httpsRequest : httpRequest)(
+    new URL(apiTarget.origin + req.url),
+    { method: req.method, headers: { ...req.headers, host: apiTarget.host } },
+    response => {
+      res.writeHead(response.statusCode || 502, response.headers);
+      response.pipe(res);
+    },
+  );
+  upstream.setTimeout(30000, () => upstream.destroy(new Error('API timeout')));
+  upstream.on('error', () => {
+    if (!res.headersSent) res.status(502).json({ error: 'API indisponível.' });
+    else res.destroy();
+  });
+  req.pipe(upstream);
+});
 
 /**
  * Serve static files from /browser

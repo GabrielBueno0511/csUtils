@@ -1,0 +1,11 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "angular",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist/csutils/browser",
+  "rewrites": [{ "source": "/((?!.*\\.[^/]+$).*)", "destination": "/index.html" }],
+  "headers": [
+    { "source": "/app-config.json", "headers": [{ "key": "Cache-Control", "value": "no-store" }] },
+    { "source": "/index.html", "headers": [{ "key": "Cache-Control", "value": "no-cache" }] }
+  ]
+}

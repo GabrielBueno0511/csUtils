@@ -1,0 +1,58 @@
+<section class="home" id="home-page" [class.showing-favorites]="selectedTab() === 'favorites'">
+  <header class="home__header">
+    <div class="home__intro">
+      <p class="eyebrow">COUNTER-STRIKE 2 / UTILITÁRIAS DA COMUNIDADE</p>
+      <h1 class="home__title">PRECISÃO EM<br /><span>CADA PIXEL.</span></h1>
+      <p class="home__subtitle">Conheça a posição. Alinhe a mira. Acerte o lançamento.<br />Seus smokes, organizados por mapa e posição.</p>
+    </div>
+    <div class="home__emblem" aria-hidden="true">
+      <img src="brand/csutils-mark.svg" alt="" width="160" height="160" />
+      <span>POSIÇÃO · MIRA · ARREMESSO</span>
+    </div>
+  </header>
+
+  <nav class="home-tabs" aria-label="Explorar spots">
+    <a routerLink="/" [queryParams]="{ tab: 'maps' }" [class.active]="selectedTab() === 'maps'" [attr.aria-current]="selectedTab() === 'maps' ? 'page' : null">Mapas</a>
+    <a routerLink="/" [queryParams]="{ tab: 'favorites' }" [class.active]="selectedTab() === 'favorites'" [attr.aria-current]="selectedTab() === 'favorites' ? 'page' : null"><span aria-hidden="true">☆</span> Favoritos</a>
+  </nav>
+
+  @if (selectedTab() === 'favorites') {
+    <app-favorites />
+  } @else {
+  <div class="home__toolbar">
+    <div><p class="eyebrow">ESCOLHA SEU CENÁRIO</p><h2>Mapas disponíveis <span>{{ maps().length.toString().padStart(2, '0') }}</span></h2></div>
+  <div class="home__actions">
+    @if (auth.user()) {
+    <a routerLink="/create-spot" class="home__create-btn" id="btn-create-spot">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="home__create-icon">
+        <path d="M12 5v14" />
+        <path d="M5 12h14" />
+      </svg>
+      Criar Novo Spot
+    </a>
+    } @else {
+    <a routerLink="/login" [queryParams]="{ returnUrl: '/create-spot' }" class="home__create-btn">
+      Entre para criar um spot
+    </a>
+    }
+  </div>
+
+  </div>
+
+  <div class="home__grid">
+    @for (map of maps(); track map.id) {
+    <a class="map-card" [routerLink]="map.route" [id]="'map-card-' + map.id" [attr.aria-label]="'Ver posições de ' + map.name">
+      <div class="map-card__image-wrapper">
+        <img [src]="map.image" [alt]="'Mapa ' + map.name" class="map-card__image" loading="lazy" />
+        <div class="map-card__glow"></div>
+      </div>
+      <div class="map-card__overlay">
+        <div><span class="map-card__index">MAPA / {{ ($index + 1).toString().padStart(2, '0') }}</span></div>
+        <span class="map-card__arrow" aria-hidden="true">↗</span>
+      </div>
+    </a>
+    }
+  </div>
+  }
+</section>
