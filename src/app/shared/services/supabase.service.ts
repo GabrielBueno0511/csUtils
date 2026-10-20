@@ -67,7 +67,7 @@ export class SupabaseService implements OnDestroy {
       email_exists: 'Já existe uma conta com este e-mail. Entre ou use a opção de recuperar senha.',
       invalid_email: 'Confira se o endereço de e-mail foi digitado corretamente.',
       weak_password: 'Use uma senha mais forte, com pelo menos 10 caracteres.',
-      over_email_send_rate_limit: 'Foram enviados muitos pedidos em pouco tempo. Aguarde alguns minutos antes de tentar novamente.',
+      over_email_send_rate_limit: 'O limite de e-mails do Supabase foi atingido: o serviço padrão envia até 2 por hora. Aguarde até uma hora ou configure um SMTP próprio no Supabase.',
       signup_disabled: 'O cadastro está temporariamente indisponível. Tente novamente mais tarde.',
       '23505': 'Este registro já existe.',
       '42501': 'Você não tem permissão para realizar esta ação.',

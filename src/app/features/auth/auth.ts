@@ -79,7 +79,7 @@ export class AuthComponent {
         this.canResendConfirmation.set(false);
         this.resendNotice.set(`Se ${email} precisar confirmar a conta, enviaremos um novo link.`);
       },
-      error: () => this.resendNotice.set('Não foi possível reenviar agora. Aguarde um pouco e tente novamente.'),
+      error: error => this.resendNotice.set(this.authError(error)),
     });
   }
 
@@ -102,7 +102,7 @@ export class AuthComponent {
     }
     if (/signup_disabled|signups.*disabled/.test(message)) return 'O cadastro está temporariamente indisponível. Tente novamente mais tarde.';
     if (/over_email_send_rate_limit|rate limit|too many requests/.test(message) || status === 429) {
-      return 'Foram enviados muitos pedidos em pouco tempo. Aguarde alguns minutos antes de tentar novamente.';
+      return 'O limite de e-mails do Supabase foi atingido: o serviço padrão envia até 2 por hora. Aguarde até uma hora ou configure um SMTP próprio no Supabase.';
     }
     if (status === 400) return 'Não foi possível criar a conta com esses dados. Confira o nome, o e-mail e a senha.';
     if (status >= 500) return 'O serviço de cadastro está temporariamente indisponível. Tente novamente em instantes.';

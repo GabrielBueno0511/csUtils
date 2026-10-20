@@ -58,7 +58,7 @@ export class PasswordRecoveryComponent {
     const message = String(error?.error?.error ?? error?.message ?? '').toLowerCase();
     if (status === 0 || error instanceof TypeError) return 'Não foi possível conectar ao serviço. Verifique sua internet e tente novamente.';
     if (/rate limit|too many requests|over_email_send_rate_limit/.test(message) || status === 429) {
-      return 'Foram enviados muitos pedidos. Aguarde alguns minutos antes de tentar novamente.';
+      return 'O limite de e-mails do Supabase foi atingido: o serviço padrão envia até 2 por hora. Aguarde até uma hora ou configure um SMTP próprio no Supabase.';
     }
     if (this.settingNewPassword && (status === 400 || /expired|invalid.*(token|link)|flow_state/.test(message))) {
       return 'Este link expirou ou já foi usado. Peça uma nova redefinição de senha.';
