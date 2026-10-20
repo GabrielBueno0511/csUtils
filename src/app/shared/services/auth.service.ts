@@ -60,6 +60,13 @@ export class AuthService {
     return defer(() => this.supabase.updatePassword(password));
   }
 
+  resendConfirmation(email: string): Observable<void> {
+    if (!this.supabase.enabled) return throwError(() => new HttpErrorResponse({
+      status: 501, error: { error: 'O reenvio de confirmação por e-mail requer o modo Supabase.' },
+    }));
+    return defer(() => this.supabase.resendConfirmation(email));
+  }
+
   logout(): Observable<unknown> {
     if (this.supabase.enabled) return defer(() => this.supabase.logout()).pipe(tap(() => this.clear()));
     return this.http.post('/api/auth/logout', {}).pipe(timeout(15000), tap(() => this.clear()));

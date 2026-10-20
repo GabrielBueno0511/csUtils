@@ -28,10 +28,15 @@ export class AuthComponent {
   protected readonly error = signal('');
   protected readonly confirmationPending = signal(false);
   protected readonly confirmationEmail = signal('');
+  protected readonly canResendConfirmation = signal(false);
+  protected readonly resendBusy = signal(false);
+  protected readonly resendNotice = signal('');
 
   protected submit(): void {
     if (this.busy()) return;
     this.error.set('');
+    this.canResendConfirmation.set(false);
+    this.resendNotice.set('');
     this.confirmationPending.set(false);
     if (this.registering && this.password !== this.confirmPassword) {
       this.error.set('As senhas precisam ser iguais.');
@@ -53,8 +58,25 @@ export class AuthComponent {
         void this.router.navigateByUrl(this.returnUrl);
       },
       error: error => {
+        const message = String(error?.error?.error ?? '').toLowerCase();
+        this.canResendConfirmation.set(!this.registering && /email_not_confirmed|confirme seu e-mail/.test(message));
         this.error.set(this.authError(error));
       },
+    });
+  }
+
+  protected resendConfirmation(): void {
+    if (this.resendBusy()) return;
+    const email = (this.confirmationPending() ? this.confirmationEmail() : this.email).trim();
+    if (!email) return;
+    this.resendBusy.set(true);
+    this.resendNotice.set('');
+    this.auth.resendConfirmation(email).pipe(finalize(() => this.resendBusy.set(false))).subscribe({
+      next: () => {
+        this.canResendConfirmation.set(false);
+        this.resendNotice.set(`Se ${email} precisar confirmar a conta, enviaremos um novo link.`);
+      },
+      error: () => this.resendNotice.set('Não foi possível reenviar agora. Aguarde um pouco e tente novamente.'),
     });
   }
 

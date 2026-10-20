@@ -52,6 +52,12 @@ export class SupabaseService implements OnDestroy {
     return { id: user.id, email: user.email ?? '', name: user.user_metadata['name'] ?? 'Jogador' };
   }
 
+  private authRedirect(path: string): string {
+    const { hostname, origin } = window.location;
+    const local = hostname === 'localhost' || hostname === '127.0.0.1';
+    return `${local ? origin : 'https://csutils.vercel.app'}${path}`;
+  }
+
   private fail(error: { message: string; status?: number; code?: string } | null): void {
     if (!error) return;
     const messages: Record<string, string> = {
@@ -84,15 +90,21 @@ export class SupabaseService implements OnDestroy {
 
   async register(name: string, email: string, password: string): Promise<AuthResponse> {
     const { data, error } = await this.client.auth.signUp({ email: email.trim(), password,
-      options: { data: { name: name.trim() }, emailRedirectTo: window.location.origin + '/login' } });
+      options: { data: { name: name.trim() }, emailRedirectTo: this.authRedirect('/login') } });
     this.fail(error);
     return data.session ? { user: this.authUser(data.session.user) } : { user: null, confirmationRequired: true };
   }
 
   async sendPasswordReset(email: string): Promise<void> {
     const { error } = await this.client.auth.resetPasswordForEmail(email.trim(), {
-      redirectTo: `${window.location.origin}/reset-password`,
+      redirectTo: this.authRedirect('/reset-password'),
     });
+    this.fail(error);
+  }
+
+  async resendConfirmation(email: string): Promise<void> {
+    const { error } = await this.client.auth.resend({ type: 'signup', email: email.trim(),
+      options: { emailRedirectTo: this.authRedirect('/login') } });
     this.fail(error);
   }
 

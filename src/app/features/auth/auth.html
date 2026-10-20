@@ -11,6 +11,8 @@
         <p class="confirmation-email">{{ confirmationEmail() }}</p>
         <p>Abra a mensagem e clique no link para ativar sua conta. Depois, volte aqui para entrar.</p>
         <p class="mail-hint">Não encontrou? Confira a pasta de spam ou lixo eletrônico.</p>
+        <button class="link-button" type="button" (click)="resendConfirmation()" [disabled]="resendBusy()">{{ resendBusy() ? 'Reenviando…' : 'Reenviar e-mail de confirmação' }}</button>
+        @if (resendNotice()) { <p role="status">{{ resendNotice() }}</p> }
         <a class="primary-link" routerLink="/login" [queryParams]="{ returnUrl: returnUrl }">Ir para entrar</a>
         <p class="switch">Usou o endereço errado? <a routerLink="/register" [queryParams]="{ returnUrl: returnUrl }">Criar conta novamente</a></p>
       </div>
@@ -32,6 +34,10 @@
         <input id="confirm-password" name="confirmPassword" type="password" [(ngModel)]="confirmPassword" required minlength="10" maxlength="128" autocomplete="new-password" />
       }
       @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
+      @if (canResendConfirmation()) {
+        <button class="link-button" type="button" (click)="resendConfirmation()" [disabled]="resendBusy()">{{ resendBusy() ? 'Reenviando…' : 'Reenviar confirmação por e-mail' }}</button>
+        @if (resendNotice()) { <p role="status">{{ resendNotice() }}</p> }
+      }
       <button type="submit" [disabled]="form.invalid || busy()">{{ busy() ? 'Aguarde…' : registering ? 'Criar conta' : 'Entrar' }}</button>
     </form>
     @if (!registering) { <p class="switch forgot-link"><a routerLink="/forgot-password">Esqueci minha senha</a></p> }
