@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TimeoutError, finalize } from 'rxjs';
@@ -20,6 +20,9 @@ export class AuthComponent {
     return url?.startsWith('/') && !url.startsWith('//') && !url.includes('\\') &&
       !/^\/(login|register)([/?#]|$)/.test(url) ? url : '/';
   })();
+  private readonly redirectAfterConfirmation = effect(() => {
+    if (!this.registering && this.auth.user()) void this.router.navigateByUrl(this.returnUrl);
+  });
   protected name = '';
   protected email = '';
   protected password = '';
