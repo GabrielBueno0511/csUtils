@@ -7,7 +7,18 @@ import type { UtilityDto } from './utility.service';
 import type { AdminUser } from '../models/admin-user.interface';
 
 const BUCKET = 'utility-images';
+const MAP_SPOT_BUCKET = 'map-spot-images';
 const PAGE_SIZE = 500;
+
+export interface AdminSpotRecord {
+  map_id: string;
+  spot_id: string;
+  name: string;
+  image_path: string | null;
+  image_cleared: boolean;
+  is_custom: boolean;
+  image_url: string;
+}
 
 interface UtilityRow {
   id: number;
@@ -137,6 +148,72 @@ export class SupabaseService implements OnDestroy {
       new_role: role,
     });
     this.fail(error);
+  }
+
+  async adminSpots(): Promise<AdminSpotRecord[]> {
+    const { data, error } = await this.client.from('admin_spots')
+      .select('map_id,spot_id,name,image_path,image_cleared,is_custom').order('map_id').order('name');
+    this.fail(error);
+    return (data ?? []).map(row => ({
+      ...row,
+      image_url: row.image_path
+        ? this.client.storage.from(MAP_SPOT_BUCKET).getPublicUrl(row.image_path).data.publicUrl
+        : '',
+    })) as AdminSpotRecord[];
+  }
+
+  async saveAdminSpot(input: {
+    mapId: string;
+    spotId: string;
+    name: string;
+    isCustom: boolean;
+    image: File | null;
+    removeImage: boolean;
+  }): Promise<void> {
+    const userId = await this.requireUserId();
+    const { data: previous, error: readError } = await this.client.from('admin_spots')
+      .select('image_path,image_cleared').eq('map_id', input.mapId).eq('spot_id', input.spotId).maybeSingle();
+    this.fail(readError);
+
+    let imagePath = previous?.image_path as string | null ?? null;
+    let imageCleared = previous?.image_cleared as boolean ?? false;
+    let uploadedPath: string | null = null;
+    if (input.image) {
+      if (!['image/png', 'image/jpeg', 'image/webp'].includes(input.image.type) || input.image.size > 5 * 1024 * 1024) {
+        throw new HttpErrorResponse({ status: 400, error: { error: 'Use uma imagem PNG, JPEG ou WebP de até 5 MB.' } });
+      }
+      const extension = input.image.type === 'image/jpeg' ? 'jpg' : input.image.type.split('/')[1];
+      uploadedPath = `admin-spots/${userId}/${input.mapId}/${input.spotId}/${crypto.randomUUID()}.${extension}`;
+      const { error } = await this.client.storage.from(MAP_SPOT_BUCKET).upload(uploadedPath, input.image, {
+        contentType: input.image.type, upsert: false,
+      });
+      this.fail(error);
+      imagePath = uploadedPath;
+      imageCleared = false;
+    } else if (input.removeImage) {
+      imagePath = null;
+      imageCleared = true;
+    }
+
+    const { error } = await this.client.from('admin_spots').upsert({
+      map_id: input.mapId,
+      spot_id: input.spotId,
+      name: input.name.trim(),
+      image_path: imagePath,
+      image_cleared: imageCleared,
+      is_custom: input.isCustom,
+      updated_at: new Date().toISOString(),
+    }, { onConflict: 'map_id,spot_id' });
+    if (error) {
+      if (uploadedPath) await this.removeMapSpotImage(uploadedPath);
+      this.fail(error);
+    }
+    if (uploadedPath && previous?.image_path) await this.removeMapSpotImage(previous.image_path as string);
+  }
+
+  private async removeMapSpotImage(path: string): Promise<void> {
+    const { error } = await this.client.storage.from(MAP_SPOT_BUCKET).remove([path]);
+    if (error) console.warn('Não foi possível remover uma imagem de spot substituída.');
   }
 
   private async requireUserId(): Promise<string> {

@@ -13,4 +13,8 @@ export class AdminService {
   setRole(userId: string, role: 'admin' | 'user') {
     return defer(() => this.supabase.setAdminUserRole(userId, role));
   }
+
+  saveSpot(input: { mapId: string; spotId: string; name: string; isCustom: boolean; image: File | null; removeImage: boolean }) {
+    return defer(() => this.supabase.saveAdminSpot(input));
+  }
 }

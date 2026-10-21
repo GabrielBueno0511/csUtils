@@ -1,0 +1,73 @@
+<main class="admin-spots">
+  <header class="admin-spots__header">
+    <div>
+      <p class="eyebrow">PAINEL ADMINISTRATIVO / MAPAS</p>
+      <h1>Gerenciar spots</h1>
+      <p>Adicione posições aos mapas e atualize o nome ou a imagem de qualquer spot.</p>
+    </div>
+    <a class="back-link" routerLink="/">Voltar ao início</a>
+  </header>
+
+  <section class="admin-spots__editor" aria-labelledby="spot-editor-title">
+    <div class="editor-heading">
+      <div>
+        <p class="eyebrow">CATÁLOGO DE POSIÇÕES</p>
+        <h2 id="spot-editor-title">{{ editing() ? 'Editar spot' : 'Adicionar spot' }}</h2>
+      </div>
+      @if (editing()) {
+        <button type="button" class="button button--quiet" (click)="startCreate()">Adicionar outro</button>
+      }
+    </div>
+
+    <form (ngSubmit)="submit()">
+      <label for="spot-map">Mapa
+        <select id="spot-map" [ngModel]="selectedMapId()" (ngModelChange)="selectedMapId.set($event)" name="map" [disabled]="!!editing()">
+          @for (map of maps; track map.id) { <option [value]="map.id">{{ map.name }}</option> }
+        </select>
+      </label>
+      <label for="spot-name">Nome do spot
+        <input id="spot-name" name="name" type="text" maxlength="80" required autocomplete="off"
+          [ngModel]="name()" (ngModelChange)="name.set($event)" placeholder="Ex.: Bomb/Altar" />
+      </label>
+      <label class="image-field" for="spot-image">Imagem <span>(opcional, PNG/JPEG/WebP até 5 MB)</span>
+        <input id="spot-image" name="image" type="file" accept="image/png,image/jpeg,image/webp" (change)="onImageSelected($event)" />
+      </label>
+      @if (imagePreview()) {
+        <div class="image-preview">
+          <img [src]="imagePreview()" alt="Prévia da imagem do spot" />
+          <button type="button" class="button button--quiet" (click)="clearImage()">Remover imagem</button>
+        </div>
+      } @else {
+        <p class="image-empty">Sem imagem: o card do spot ficará marcado como “Em breve”.</p>
+      }
+      @if (error()) { <p class="message message--error" role="alert">{{ error() }}</p> }
+      @if (success()) { <p class="message message--success" role="status">{{ success() }}</p> }
+      <button class="button button--primary" type="submit" [disabled]="saving() || !name().trim()">
+        {{ saving() ? 'Salvando…' : editing() ? 'Salvar alterações' : 'Adicionar spot' }}
+      </button>
+    </form>
+  </section>
+
+  <section class="admin-spots__list" aria-labelledby="spot-list-title">
+    <div class="editor-heading">
+      <div><p class="eyebrow">SPOTS DISPONÍVEIS</p><h2 id="spot-list-title">Spots cadastrados</h2></div>
+      <span class="count">{{ spots().length }} spots</span>
+    </div>
+    @if (loading()) { <p class="notice">Carregando catálogo…</p> }
+    @else if (spots().length) {
+      <div class="spot-table-wrap"><table>
+        <thead><tr><th>Mapa</th><th>Spot</th><th>Imagem</th><th></th></tr></thead>
+        <tbody>
+          @for (spot of spots(); track spot.mapId + ':' + spot.id) {
+            <tr>
+              <td>{{ spot.mapName }}</td>
+              <td>{{ spot.name }} @if (spot.isCustom) { <small class="custom-tag">Novo</small> }</td>
+              <td>{{ spot.image ? 'Adicionada' : 'Em breve' }}</td>
+              <td><button type="button" class="edit-button" (click)="startEdit(spot)">Editar</button></td>
+            </tr>
+          }
+        </tbody>
+      </table></div>
+    } @else { <p class="notice">Nenhum spot cadastrado neste catálogo.</p> }
+  </section>
+</main>

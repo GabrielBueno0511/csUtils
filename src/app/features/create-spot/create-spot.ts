@@ -11,6 +11,7 @@ import {
 } from '../../shared/models/spot-form.interface';
 import { UtilityService } from '../../shared/services/utility.service';
 import { MAP_SPOTS_DATA } from '../../shared/data/map-spots.data';
+import { SpotCatalogService } from '../../shared/services/spot-catalog.service';
 
 interface ImagePreview {
     file: File;
@@ -27,6 +28,7 @@ interface ImagePreview {
 export class CreateSpotComponent {
     private readonly router = inject(Router);
     private readonly utilityService = inject(UtilityService);
+    private readonly catalog = inject(SpotCatalogService);
 
     protected readonly maps: MapItem[] = [
         { id: 'dust2', name: 'Dust 2', image: 'maps/dust2.png', route: '/map/dust2' },
@@ -39,12 +41,16 @@ export class CreateSpotComponent {
     ];
 
     protected readonly throwTypes: readonly ThrowTypeOption[] = THROW_TYPE_OPTIONS;
-    protected readonly spotNames = computed<readonly SpotNameOption[]>(() =>
-        (MAP_SPOTS_DATA[this.selectedMapId()]?.spots ?? []).map(spot => ({ value: spot.id, label: spot.name })));
+    protected readonly spots = signal<readonly SpotNameOption[]>([]);
+    protected readonly spotNames = computed<readonly SpotNameOption[]>(() => this.spots());
 
     protected onMapChange(mapId: string): void {
         this.selectedMapId.set(mapId);
         this.spotName.set('');
+        this.catalog.forMap(mapId).subscribe({
+            next: spots => this.spots.set(spots.map(spot => ({ value: spot.id, label: spot.name }))),
+            error: () => this.spots.set((MAP_SPOTS_DATA[mapId]?.spots ?? []).map(spot => ({ value: spot.id, label: spot.name }))),
+        });
     }
 
     protected readonly selectedMapId = signal<string>('');

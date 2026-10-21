@@ -7,7 +7,10 @@
     <a routerLink="/" [queryParams]="{ tab: 'favorites' }">Favoritos</a>
     @if (auth.user(); as user) {
       <span>Olá, {{ user.name }}</span>
-      @if (auth.isAdmin()) { <a routerLink="/admin/users">Usuários</a> }
+      @if (auth.isAdmin()) {
+        <a routerLink="/admin/users">Usuários</a>
+        <a routerLink="/admin/spots">Spots</a>
+      }
       <button type="button" (click)="logout()" [disabled]="logoutBusy()">{{ logoutBusy() ? 'Saindo…' : 'Sair' }}</button>
     } @else {
       <a routerLink="/login">Entrar</a>

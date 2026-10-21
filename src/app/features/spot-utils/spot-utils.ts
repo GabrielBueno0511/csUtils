@@ -10,6 +10,7 @@ import { SavedUtility } from '../../shared/models/saved-utility.interface';
 import { MAP_SPOTS_DATA } from '../../shared/data/map-spots.data';
 import { MapSpotsData, SpotItem } from '../../shared/models/spot-item.interface';
 import { UtilityService } from '../../shared/services/utility.service';
+import { SpotCatalogService } from '../../shared/services/spot-catalog.service';
 
 @Component({
     selector: 'app-spot-utils',
@@ -24,9 +25,11 @@ export class SpotUtilsComponent {
     protected readonly favoriteError = signal('');
     private readonly route = inject(ActivatedRoute);
     private readonly utilityService = inject(UtilityService);
+    private readonly catalog = inject(SpotCatalogService);
 
     protected readonly mapId = signal<string>('');
     protected readonly spotNameId = signal<string>('');
+    protected readonly catalogSpots = signal<readonly SpotItem[]>([]);
 
     protected readonly mapData = computed<MapSpotsData | undefined>(() => {
         return MAP_SPOTS_DATA[this.mapId()];
@@ -35,7 +38,7 @@ export class SpotUtilsComponent {
     protected readonly spotData = computed<SpotItem | undefined>(() => {
         const data = this.mapData();
         if (!data) return undefined;
-        return data.spots.find(s => s.id === this.spotNameId());
+        return this.catalogSpots().find(s => s.id === this.spotNameId()) ?? data.spots.find(s => s.id === this.spotNameId());
     });
 
     protected readonly savedUtilities = signal<SavedUtility[]>([]);
@@ -122,6 +125,11 @@ export class SpotUtilsComponent {
                 this.deleteError.set('');
                 this.mapId.set(mid);
                 this.spotNameId.set(sid);
+                this.catalogSpots.set(MAP_SPOTS_DATA[mid]?.spots ?? []);
+                this.catalog.forMap(mid).subscribe({
+                    next: spots => this.catalogSpots.set(spots),
+                    error: () => this.catalogSpots.set(MAP_SPOTS_DATA[mid]?.spots ?? []),
+                });
                 this.loadUtilities(mid, sid);
             }
         });

@@ -12,6 +12,11 @@ export const routes: Routes = [
         loadComponent: () => import('./features/admin-users/admin-users').then(m => m.AdminUsersComponent),
     },
     {
+        path: 'admin/spots',
+        canActivate: [adminGuard],
+        loadComponent: () => import('./features/admin-spots/admin-spots').then(m => m.AdminSpotsComponent),
+    },
+    {
         path: '',
         loadComponent: () =>
             import('./features/home/home').then((m) => m.HomeComponent),

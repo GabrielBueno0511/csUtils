@@ -20,7 +20,7 @@
 
     @if (mapData(); as data) {
     <div class="spots__grid">
-        @for (spot of data.spots; track spot.id) {
+        @for (spot of spots(); track spot.id) {
         <button class="spot-card" [id]="'spot-card-' + spot.id" (click)="onSelectSpot(spot)">
             <div class="spot-card__image-wrapper">
                 @if (!spot.imageNeedsConfirmation) {
