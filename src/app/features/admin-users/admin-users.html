@@ -1,0 +1,62 @@
+<main class="admin-users">
+  <header class="admin-users__header">
+    <div>
+      <p class="eyebrow">PAINEL DE CONTROLE / ACESSO ADMINISTRATIVO</p>
+      <h1>Usuários</h1>
+      <p>Contas, atividade e permissões da comunidade.</p>
+    </div>
+    <a routerLink="/" class="back-link">← Voltar aos mapas</a>
+  </header>
+
+  <section class="admin-users__stats" aria-label="Resumo de usuários">
+    <article><span>Contas</span><strong>{{ users().length }}</strong></article>
+    <article><span>Administradores</span><strong>{{ adminCount() }}</strong></article>
+    <article><span>Spots criados</span><strong>{{ spotCount() }}</strong></article>
+  </section>
+
+  @if (error()) { <p class="admin-users__error" role="alert">{{ error() }}</p> }
+  @if (loading()) {
+    <p class="admin-users__notice" role="status">Carregando usuários…</p>
+  } @else if (users().length === 0 && !error()) {
+    <p class="admin-users__notice">Nenhuma conta cadastrada.</p>
+  } @else {
+    <div class="admin-users__table-wrap">
+      <table>
+        <thead>
+          <tr><th>Conta</th><th>Contato</th><th>Cadastro</th><th>Último acesso</th><th>Spots</th><th>Papel</th></tr>
+        </thead>
+        <tbody>
+          @for (user of users(); track user.id) {
+            <tr>
+              <td class="account-cell">
+                <strong>{{ user.name }}</strong>
+                <small>{{ user.id }}</small>
+                <details><summary>Dados adicionais</summary><pre>{{ metadata(user) }}</pre></details>
+              </td>
+              <td>
+                <span>{{ user.email || 'Sem e-mail' }}</span>
+                <small>{{ user.email_confirmed_at ? 'E-mail confirmado' : 'E-mail pendente' }}</small>
+                @if (user.phone) { <small>{{ user.phone }} · {{ user.phone_confirmed_at ? 'confirmado' : 'não confirmado' }}</small> }
+              </td>
+              <td>
+                <span>{{ user.created_at | date:'dd/MM/yyyy HH:mm' }}</span>
+                <small>Atualizado: {{ user.updated_at | date:'dd/MM/yyyy HH:mm' }}</small>
+              </td>
+              <td>{{ user.last_sign_in_at ? (user.last_sign_in_at | date:'dd/MM/yyyy HH:mm') : 'Nunca' }}</td>
+              <td><strong class="spot-count">{{ user.spots_created }}</strong></td>
+              <td>
+                <label class="visually-hidden" [for]="'role-' + user.id">Papel de {{ user.name }}</label>
+                <select [id]="'role-' + user.id" [value]="user.role" (change)="changeRole(user, $event)" [disabled]="savingId() !== null">
+                  <option value="admin">Admin</option>
+                  <option value="user">User</option>
+                </select>
+                @if (savingId() === user.id) { <small>Salvando…</small> }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="admin-users__footnote">Senhas não são acessíveis pelo painel. O papel é validado pelo banco em cada operação administrativa.</p>
+  }
+</main>

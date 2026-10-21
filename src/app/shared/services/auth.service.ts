@@ -1,7 +1,7 @@
 import { Injectable, PLATFORM_ID, inject, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, catchError, defer, of, tap, throwError, timeout } from 'rxjs';
+import { Observable, catchError, defer, map, of, switchMap, tap, throwError, timeout } from 'rxjs';
 
 import { SupabaseService } from './supabase.service';
 
@@ -15,13 +15,27 @@ export class AuthService {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly currentUser = signal<AuthUser | null>(null);
   readonly user = this.currentUser.asReadonly();
+  private readonly adminAccess = signal(false);
+  readonly isAdmin = this.adminAccess.asReadonly();
 
   constructor() {
-    if (this.supabase.enabled) this.supabase.watchAuth(user => this.currentUser.set(user));
+    if (this.supabase.enabled) this.supabase.watchAuth(user => {
+      const previousUser = this.currentUser();
+      this.currentUser.set(user);
+      if (!user || previousUser?.id !== user.id) this.adminAccess.set(false);
+    });
   }
 
   restore(): Observable<AuthResponse | null> {
-    if (this.supabase.enabled) return defer(() => this.supabase.restore()).pipe(tap(response => this.currentUser.set(response?.user ?? null)));
+    if (this.supabase.enabled) return defer(() => this.supabase.restore()).pipe(
+      tap(response => this.currentUser.set(response?.user ?? null)),
+      switchMap(response => response?.user
+        ? this.refreshAdminRole().pipe(map(() => response))
+        : of(response)),
+      tap(response => {
+        if (!response?.user) this.adminAccess.set(false);
+      }),
+    );
     if (!isPlatformBrowser(this.platformId)) return of(null);
     return this.http.get<AuthResponse>('/api/auth/me', { transferCache: false }).pipe(
       timeout(15000),
@@ -37,12 +51,20 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<AuthResponse> {
-    if (this.supabase.enabled) return defer(() => this.supabase.login(email, password)).pipe(tap(response => this.currentUser.set(response.user)));
+    if (this.supabase.enabled) return defer(() => this.supabase.login(email, password)).pipe(
+      tap(response => this.currentUser.set(response.user)),
+      switchMap(response => this.refreshAdminRole().pipe(map(() => response))),
+    );
     return this.authenticate('login', { email, password });
   }
 
   register(name: string, email: string, password: string): Observable<AuthResponse> {
-    if (this.supabase.enabled) return defer(() => this.supabase.register(name, email, password)).pipe(tap(response => this.currentUser.set(response.user)));
+    if (this.supabase.enabled) return defer(() => this.supabase.register(name, email, password)).pipe(
+      tap(response => this.currentUser.set(response.user)),
+      switchMap(response => response.user
+        ? this.refreshAdminRole().pipe(map(() => response))
+        : of(response)),
+    );
     return this.authenticate('register', { name, email, password });
   }
 
@@ -72,7 +94,18 @@ export class AuthService {
     return this.http.post('/api/auth/logout', {}).pipe(timeout(15000), tap(() => this.clear()));
   }
 
-  clear(): void { this.currentUser.set(null); }
+  clear(): void { this.currentUser.set(null); this.adminAccess.set(false); }
+
+  refreshAdminRole(): Observable<boolean> {
+    if (!this.supabase.enabled || !this.currentUser()) {
+      this.adminAccess.set(false);
+      return of(false);
+    }
+    return defer(() => this.supabase.currentUserRole()).pipe(
+      map(role => role === 'admin'),
+      tap(isAdmin => this.adminAccess.set(isAdmin)),
+    );
+  }
 
   private authenticate(action: string, body: object): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`/api/auth/${action}`, body).pipe(

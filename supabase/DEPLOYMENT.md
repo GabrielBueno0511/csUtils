@@ -24,3 +24,9 @@ Configurado no painel com autorização do usuário:
 - Redirect URLs: `http://localhost:4200/login` e `http://127.0.0.1:4200/login`
 
 Execute `npm run check:connection` para repetir as verificações remotas sem criar usuários ou alterar dados. Cadastro/login com uma conta real e upload de screenshots ainda precisam ser validados. O domínio da Vercel deve ser adicionado quando o frontend for publicado.
+
+## Administração de usuários
+
+A migração `20261021000100_admin_user_management.sql` adiciona os papéis `admin` e `user`, promove as contas que já existem e deixa novos cadastros como `user`. Ela também cria RPCs protegidas para listar dados das contas e alterar papéis. A listagem não retorna hashes de senha; metadados removem os campos `password` e `encrypted_password`.
+
+Como a migração inicial foi aplicada manualmente no SQL Editor e o histórico da CLI ainda não foi sincronizado, aplique o conteúdo dessa migração uma vez no SQL Editor do projeto Supabase antes de publicar o frontend. A tela `/admin/users` exige papel admin, e a autorização também é verificada pelas RPCs no banco. A página mostra nome, e-mail, telefone quando disponível, confirmação, datas de criação/atualização/último acesso, metadados, papel e número de utilitárias criadas.

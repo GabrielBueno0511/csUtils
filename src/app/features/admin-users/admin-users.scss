@@ -1,0 +1,40 @@
+:host { display: block; }
+.admin-users { width: min(1232px, calc(100% - 48px)); margin: 48px auto 80px; }
+.admin-users__header { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 28px; }
+.admin-users__header h1 { margin: 6px 0 8px; font-family: var(--font-heading); font-size: clamp(2.4rem, 6vw, 4rem); font-weight: 500; line-height: 1; }
+.admin-users__header p:not(.eyebrow) { margin: 0; color: var(--text-secondary); }
+.eyebrow { margin: 0; color: var(--accent-secondary); font-size: .7rem; font-weight: 700; letter-spacing: .16em; }
+.back-link { color: var(--text-secondary); font-size: .85rem; white-space: nowrap; }
+.back-link:hover { color: var(--accent-secondary); }
+.admin-users__stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-bottom: 22px; }
+.admin-users__stats article { display: grid; gap: 7px; padding: 18px 20px; border: 1px solid var(--card-border); background: var(--bg-secondary); }
+.admin-users__stats span, .admin-users__footnote { color: var(--text-secondary); font-size: .8rem; }
+.admin-users__stats strong { font-family: var(--font-heading); font-size: 2rem; font-weight: 500; }
+.admin-users__table-wrap { overflow-x: auto; border: 1px solid var(--card-border); background: var(--bg-secondary); }
+table { width: 100%; border-collapse: collapse; text-align: left; font-size: .83rem; }
+th { padding: 14px 16px; color: var(--text-secondary); background: rgba(255,255,255,.025); font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; }
+td { padding: 16px; border-top: 1px solid var(--card-border); vertical-align: top; }
+td span, td small { display: block; }
+td small { max-width: 260px; margin-top: 5px; color: var(--text-secondary); overflow-wrap: anywhere; font-size: .72rem; }
+.account-cell strong { display: block; }
+.account-cell small { font-family: monospace; font-size: .65rem; }
+details { margin-top: 8px; color: var(--accent-secondary); font-size: .73rem; }
+details summary { cursor: pointer; }
+details pre { max-width: 300px; max-height: 180px; overflow: auto; padding: 10px; color: var(--text-primary); background: var(--bg-primary); white-space: pre-wrap; overflow-wrap: anywhere; }
+td select { min-width: 100px; padding: 8px 10px; color: var(--text-primary); background: var(--bg-primary); border: 1px solid var(--card-border); border-radius: 4px; }
+td select:disabled { opacity: .65; }
+.spot-count { color: var(--accent-secondary); font-size: 1.1rem; }
+.admin-users__error, .admin-users__notice { padding: 16px; border: 1px solid var(--card-border); background: var(--bg-secondary); }
+.admin-users__error { color: var(--danger); }
+.admin-users__notice { color: var(--text-secondary); }
+.admin-users__footnote { margin-top: 14px; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+@media(max-width: 680px) {
+  .admin-users { width: calc(100% - 32px); margin-top: 30px; }
+  .admin-users__header { align-items: start; flex-direction: column; }
+  .admin-users__stats { gap: 8px; }
+  .admin-users__stats article { padding: 13px 12px; }
+  .admin-users__stats span { font-size: .68rem; }
+  .admin-users__stats strong { font-size: 1.6rem; }
+  table { min-width: 850px; }
+}

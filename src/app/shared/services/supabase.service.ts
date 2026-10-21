@@ -4,6 +4,7 @@ import { createClient, SupabaseClient, User } from '@supabase/supabase-js';
 import { APP_SETTINGS } from '../config/app-settings';
 import type { AuthResponse, AuthUser } from './auth.service';
 import type { UtilityDto } from './utility.service';
+import type { AdminUser } from '../models/admin-user.interface';
 
 const BUCKET = 'utility-images';
 const PAGE_SIZE = 500;
@@ -115,6 +116,26 @@ export class SupabaseService implements OnDestroy {
 
   async logout(): Promise<void> {
     const { error } = await this.client.auth.signOut({ scope: 'local' });
+    this.fail(error);
+  }
+
+  async currentUserRole(): Promise<string> {
+    const { data, error } = await this.client.rpc('get_my_role');
+    this.fail(error);
+    return data ?? 'user';
+  }
+
+  async adminUsers(): Promise<AdminUser[]> {
+    const { data, error } = await this.client.rpc('admin_list_users');
+    this.fail(error);
+    return (data ?? []) as AdminUser[];
+  }
+
+  async setAdminUserRole(userId: string, role: 'admin' | 'user'): Promise<void> {
+    const { error } = await this.client.rpc('admin_set_user_role', {
+      target_user_id: userId,
+      new_role: role,
+    });
     this.fail(error);
   }
 

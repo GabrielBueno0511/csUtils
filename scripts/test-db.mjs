@@ -24,7 +24,12 @@ try {
   await db.exec(`
     create role anon; create role authenticated; create role service_role bypassrls;
     create schema auth; create schema storage;
-    create table auth.users(id uuid primary key, raw_user_meta_data jsonb default '{}');
+    create table auth.users(
+      id uuid primary key, email text, phone text, raw_user_meta_data jsonb default '{}',
+      created_at timestamptz default now(), updated_at timestamptz default now(),
+      email_confirmed_at timestamptz, phone_confirmed_at timestamptz,
+      last_sign_in_at timestamptz, is_anonymous boolean default false
+    );
     create function auth.uid() returns uuid language sql stable as
       $$select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid$$;
     create function storage.foldername(text) returns text[] language sql immutable as
@@ -38,41 +43,67 @@ try {
   `);
   await db.exec(readFileSync(new URL('../supabase/migrations/20261020000100_initial.sql', import.meta.url), 'utf8'));
   await db.exec('begin');
-  await db.exec(`insert into auth.users values ('${alice}', '{"name":"Alice"}'), ('${bob}', '{"name":"Bob"}')`);
+  await db.exec(`insert into auth.users(id, email, raw_user_meta_data) values
+    ('${alice}', 'alice@example.com', '{"name":"Alice"}'),
+    ('${bob}', 'bob@example.com', '{"name":"Bob"}')`);
   await count('select count(*) n from public.profiles', 2);
+  await db.exec(readFileSync(new URL('../supabase/migrations/20261021000100_admin_user_management.sql', import.meta.url), 'utf8'));
+  await count("select count(*) n from public.profiles where role = 'admin'", 2);
   await role('anon');
   await count('select count(*) n from public.profiles', 2);
+  await denied('select public.get_my_role()');
+  await role('authenticated', alice);
+  const listedUsers = await query('select * from public.admin_list_users()');
+  assert.equal(listedUsers.length, 2);
+  assert.equal(listedUsers[0].role, 'admin');
+  assert.equal(listedUsers[0].spots_created, 0);
+  assert.equal('encrypted_password' in listedUsers[0], false);
+  checks++;
+  await db.exec(`select public.admin_set_user_role('${bob}', 'user')`);
+  await db.exec('reset role');
+  await count(`select count(*) n from public.profiles where id='${bob}' and role='user'`, 1);
+  await role('authenticated', alice);
+  await denied(`select public.admin_set_user_role('${alice}', 'user')`);
+  await db.exec(`select public.admin_set_user_role('${bob}', 'admin')`);
+  await db.exec('reset role');
+  await db.exec(`insert into auth.users(id,email,raw_user_meta_data) values ('33333333-3333-4333-8333-333333333333','charlie@example.com','{"name":"Charlie"}')`);
+  await count("select count(*) n from public.profiles where id='33333333-3333-4333-8333-333333333333' and role='user'", 1);
+  await role('authenticated', '33333333-3333-4333-8333-333333333333');
+  await denied('select * from public.admin_list_users()');
+  await denied(`select public.admin_set_user_role('${alice}', 'user')`);
+  await db.exec('reset role');
+  await count("select count(*) n from public.profiles where id='33333333-3333-4333-8333-333333333333' and role='user'", 1);
+  await role('authenticated', '33333333-3333-4333-8333-333333333333');
   await denied(`insert into public.utilities(spot_id) values ('blocked')`);
-  await denied('select * from public.utility_favorites');
   await role('authenticated', alice);
   await db.exec(`insert into storage.objects(bucket_id,name) values ('utility-images','${alice}/position.png'),('utility-images','${alice}/aim.png')`);
   await denied(`insert into storage.objects(bucket_id,name) values ('utility-images','${bob}/stolen.png')`);
   const columns = 'author_id,spot_id,spot_name,map_name,throw_type,player_position_image,aim_position_image';
   const values = `'${alice}','Smoke CT','ct','mirage','normal','${alice}/position.png','${alice}/aim.png'`;
-  await db.exec(`insert into public.utilities(${columns}) values (${values})`);
-  await db.exec(`insert into public.utility_favorites values ('${alice}',1)`);
-  await denied(`insert into public.utility_favorites values ('${bob}',1)`);
+  const utility = (await query(`insert into public.utilities(${columns}) values (${values}) returning id`))[0];
+  await db.exec(`insert into public.utility_favorites values ('${alice}',${utility.id})`);
+  await denied(`insert into public.utility_favorites values ('${bob}',${utility.id})`);
   await db.exec(`delete from storage.objects where name='${alice}/position.png'`);
   await count('select count(*) n from storage.objects', 2);
-  await denied(`update public.utilities set author_id='${bob}' where id=1`);
+  await denied(`update public.utilities set author_id='${bob}' where id=${utility.id}`);
   await role('authenticated', bob);
   await count('select count(*) n from public.utilities', 1);
   await count('select count(*) n from public.utility_favorites', 0);
   await denied(`insert into public.utilities(${columns}) values (${values})`);
   await denied(`insert into public.utilities(${columns}) values ('${bob}','Smoke','ct','mirage','normal','${bob}/missing.png','${bob}/missing2.png')`);
-  await db.exec('delete from public.utilities where id=1');
+  await db.exec(`delete from public.utilities where id=${utility.id}`);
   await count('select count(*) n from public.utilities', 1);
   await db.exec('delete from public.utility_favorites');
   await role('authenticated', alice);
   await count('select count(*) n from public.utility_favorites', 1);
   await role('authenticated', bob);
-  await db.exec(`insert into public.utility_favorites values ('${bob}',1)`);
+  await db.exec(`insert into public.utility_favorites values ('${bob}',${utility.id})`);
   await count('select count(*) n from public.utility_favorites', 1);
   await role('anon');
   await count('select count(*) n from public.utilities', 1);
-  await denied('delete from public.utilities where id=1');
+  await denied(`delete from public.utilities where id=${utility.id}`);
   await role('authenticated', alice);
-  await db.exec('delete from public.utilities where id=1');
+  await db.exec(`delete from public.utilities where id=${utility.id}`);
   await count('select count(*) n from public.utilities', 0);
   await db.exec('delete from storage.objects');
   await count('select count(*) n from storage.objects', 0);
