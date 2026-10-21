@@ -18,6 +18,7 @@ export const MAP_SPOTS_DATA: Record<string, MapSpotsData> = {
             { id: 'casinha', name: 'Casinha', image: '', imageLabel: '', imageNeedsConfirmation: true, description: 'Casinha na Dust 2' },
             { id: 'fundo', name: 'Fundo', image: 'spots/dust2/fundo.png', imageLabel: 'A Long', imageNeedsConfirmation: false, description: 'Fundo na Dust 2' },
             { id: 'entrada-do-b', name: 'Entrada do B', image: '', imageLabel: '', imageNeedsConfirmation: true, description: 'Entrada do B na Dust 2' },
+            { id: 'buraco-b', name: 'Buraco B', image: '', imageLabel: '', imageNeedsConfirmation: true, description: 'Buraco B na Dust 2' },
             { id: 'coqueiro', name: 'Coqueiro', image: '', imageLabel: '', imageNeedsConfirmation: true, description: 'Coqueiro na Dust 2' },
             { id: 'coqueiro-invertido', name: 'Coqueiro invertido', image: '', imageLabel: '', imageNeedsConfirmation: true, description: 'Coqueiro invertido na Dust 2' },
             { id: 'caixa-do-meio', name: 'Caixa do meio', image: 'spots/dust2/caixa-do-meio.png', imageLabel: 'Xbox', imageNeedsConfirmation: false, description: 'Caixa do meio na Dust 2' },
