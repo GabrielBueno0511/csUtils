@@ -1,4 +1,5 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
@@ -16,8 +17,18 @@ import { SpotCatalogService, type SpotCatalogEntry } from '../../shared/services
 export class AdminSpotsComponent implements OnInit {
   private readonly admin = inject(AdminService);
   private readonly catalog = inject(SpotCatalogService);
+  private readonly document = inject(DOCUMENT);
   protected readonly maps = Object.values(MAP_SPOTS_DATA).map(map => ({ id: map.mapId, name: map.mapName }));
   protected readonly spots = signal<SpotCatalogEntry[]>([]);
+  protected readonly mapFilter = signal('');
+  protected readonly searchName = signal('');
+  protected readonly filteredSpots = computed(() => {
+    const mapId = this.mapFilter();
+    const search = this.normalize(this.searchName());
+    return this.spots().filter(spot => (!mapId || spot.mapId === mapId)
+      && (!search || this.normalize(spot.name).includes(search)));
+  });
+  protected readonly hasFilters = computed(() => !!this.mapFilter() || !!this.searchName().trim());
   protected readonly loading = signal(true);
   protected readonly saving = signal(false);
   protected readonly error = signal('');
@@ -58,6 +69,12 @@ export class AdminSpotsComponent implements OnInit {
     this.removeImage.set(false);
     this.error.set('');
     this.success.set('');
+    this.document.defaultView?.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  protected clearFilters(): void {
+    this.mapFilter.set('');
+    this.searchName.set('');
   }
 
   protected onImageSelected(event: Event): void {
@@ -113,5 +130,9 @@ export class AdminSpotsComponent implements OnInit {
     const slug = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
       .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60).replace(/-$/g, '');
     return slug || `spot-${crypto.randomUUID().slice(0, 8)}`;
+  }
+
+  private normalize(value: string): string {
+    return value.trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('pt-BR');
   }
 }

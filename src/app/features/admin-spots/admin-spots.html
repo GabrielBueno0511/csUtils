@@ -51,14 +51,29 @@
   <section class="admin-spots__list" aria-labelledby="spot-list-title">
     <div class="editor-heading">
       <div><p class="eyebrow">SPOTS DISPONÍVEIS</p><h2 id="spot-list-title">Spots cadastrados</h2></div>
-      <span class="count">{{ spots().length }} spots</span>
+      <span class="count">{{ filteredSpots().length }} de {{ spots().length }} spots</span>
+    </div>
+    <div class="spot-filters" aria-label="Filtrar spots">
+      <label for="filter-map">Mapa
+        <select id="filter-map" [ngModel]="mapFilter()" (ngModelChange)="mapFilter.set($event)">
+          <option value="">Todos os mapas</option>
+          @for (map of maps; track map.id) { <option [value]="map.id">{{ map.name }}</option> }
+        </select>
+      </label>
+      <label for="filter-spot-name">Pesquisar spot
+        <input id="filter-spot-name" type="search" [ngModel]="searchName()" (ngModelChange)="searchName.set($event)"
+          placeholder="Digite o nome do spot" />
+      </label>
+      <button type="button" class="button button--quiet clear-filters" (click)="clearFilters()" [disabled]="!hasFilters()">
+        Limpar filtros
+      </button>
     </div>
     @if (loading()) { <p class="notice">Carregando catálogo…</p> }
-    @else if (spots().length) {
+    @else if (filteredSpots().length) {
       <div class="spot-table-wrap"><table>
         <thead><tr><th>Mapa</th><th>Spot</th><th>Imagem</th><th></th></tr></thead>
         <tbody>
-          @for (spot of spots(); track spot.mapId + ':' + spot.id) {
+          @for (spot of filteredSpots(); track spot.mapId + ':' + spot.id) {
             <tr>
               <td>{{ spot.mapName }}</td>
               <td>{{ spot.name }} @if (spot.isCustom) { <small class="custom-tag">Novo</small> }</td>
@@ -68,6 +83,8 @@
           }
         </tbody>
       </table></div>
+    } @else if (spots().length) {
+      <p class="notice">Nenhum spot corresponde à pesquisa. Ajuste os filtros.</p>
     } @else { <p class="notice">Nenhum spot cadastrado neste catálogo.</p> }
   </section>
 </main>
