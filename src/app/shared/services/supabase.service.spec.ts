@@ -25,8 +25,11 @@ describe('SupabaseService', () => {
       remove: vi.fn().mockResolvedValue({ error: null }),
       getPublicUrl: vi.fn((path: string) => ({ data: { publicUrl: 'https://example.test/' + path } })),
     };
-    query = { insert: vi.fn().mockReturnThis(), select: vi.fn().mockReturnThis(), delete: vi.fn().mockReturnThis(),
-      eq: vi.fn().mockReturnThis(), single: vi.fn() };
+    query = { insert: vi.fn().mockReturnThis(), update: vi.fn().mockReturnThis(), select: vi.fn().mockReturnThis(),
+      delete: vi.fn().mockReturnThis(), eq: vi.fn().mockReturnThis(), single: vi.fn(),
+      maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
+      then: (resolve: (value: unknown) => unknown, reject: (reason: unknown) => unknown) =>
+        Promise.resolve({ error: null }).then(resolve, reject) };
     client = { auth, storage: { from: vi.fn().mockReturnValue(storage) }, from: vi.fn().mockReturnValue(query) };
     vi.mocked(createClient).mockReturnValue(client);
     TestBed.configureTestingModule({ providers: [{ provide: APP_SETTINGS,
@@ -68,5 +71,20 @@ describe('SupabaseService', () => {
     query.single.mockResolvedValue({ data: { id: 5,player_position_image:'owner/position.png',aim_position_image:'owner/aim.png' },error:null });
     await service.deleteUtility('5');
     expect(storage.remove).toHaveBeenCalledWith(['owner/position.png','owner/aim.png']);
+  });
+
+  it('inserts new admin spots into the shared catalog', async () => {
+    await service.saveAdminSpot({ mapId: 'dust2', spotId: 'altar', name: 'Altar', isCustom: true, image: null, removeImage: false });
+    expect(query.insert).toHaveBeenCalledWith(expect.objectContaining({
+      map_id: 'dust2', spot_id: 'altar', name: 'Altar', is_custom: true,
+    }));
+    expect(query.update).not.toHaveBeenCalled();
+  });
+
+  it('updates only a spot name and image fields, leaving its map and id fixed', async () => {
+    query.maybeSingle.mockResolvedValue({ data: { image_path: null, image_cleared: false }, error: null });
+    await service.saveAdminSpot({ mapId: 'dust2', spotId: 'altar', name: 'Bomb/Altar', isCustom: true, image: null, removeImage: false });
+    expect(query.update).toHaveBeenCalledWith(expect.objectContaining({ name: 'Bomb/Altar', image_path: null, image_cleared: false }));
+    expect(query.insert).not.toHaveBeenCalled();
   });
 });

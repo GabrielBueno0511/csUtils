@@ -195,7 +195,7 @@ export class SupabaseService implements OnDestroy {
       imageCleared = true;
     }
 
-    const { error } = await this.client.from('admin_spots').upsert({
+    const values = {
       map_id: input.mapId,
       spot_id: input.spotId,
       name: input.name.trim(),
@@ -203,7 +203,16 @@ export class SupabaseService implements OnDestroy {
       image_cleared: imageCleared,
       is_custom: input.isCustom,
       updated_at: new Date().toISOString(),
-    }, { onConflict: 'map_id,spot_id' });
+    };
+    const request = previous
+      ? this.client.from('admin_spots').update({
+          name: values.name,
+          image_path: values.image_path,
+          image_cleared: values.image_cleared,
+          updated_at: values.updated_at,
+        }).eq('map_id', input.mapId).eq('spot_id', input.spotId)
+      : this.client.from('admin_spots').insert(values);
+    const { error } = await request;
     if (error) {
       if (uploadedPath) await this.removeMapSpotImage(uploadedPath);
       this.fail(error);
