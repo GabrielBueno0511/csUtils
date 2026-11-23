@@ -18,7 +18,7 @@ export interface UtilityTypeOption {
 export const UTILITY_TYPE_OPTIONS: readonly UtilityTypeOption[] = [
     { value: 'smoke', label: 'Smoke', description: 'Cortinas de fumaça' },
     { value: 'molotov', label: 'Molotov', description: 'Incendiárias e molotovs' },
-    { value: 'flashbang', label: 'Flashbang', description: 'Granadas de luz' },
+    { value: 'flashbang', label: 'Bang', description: 'Granadas de luz' },
     { value: 'he', label: 'HE', description: 'Granadas explosivas' },
 ];
 

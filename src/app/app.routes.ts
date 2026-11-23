@@ -17,11 +17,6 @@ export const routes: Routes = [
             import('./features/home/home').then((m) => m.HomeComponent),
     },
     {
-        path: 'map/:id',
-        loadComponent: () =>
-            import('./features/map-utility-types/map-utility-types').then((m) => m.MapUtilityTypesComponent),
-    },
-    {
         path: 'create-utility',
         canActivate: [authGuard],
         loadComponent: () =>
@@ -29,6 +24,11 @@ export const routes: Routes = [
     },
     {
         path: 'map/:mapId/:utilityType',
+        loadComponent: () =>
+            import('./features/map-utilities/map-utilities').then((m) => m.MapUtilitiesComponent),
+    },
+    {
+        path: 'map/:mapId',
         loadComponent: () =>
             import('./features/map-utilities/map-utilities').then((m) => m.MapUtilitiesComponent),
     },

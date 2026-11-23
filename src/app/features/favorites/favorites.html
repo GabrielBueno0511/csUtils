@@ -17,7 +17,7 @@
               <figure><figcaption>Posição do boneco</figcaption><img [src]="util.player_position_image" alt="Posição do boneco" loading="lazy" /></figure>
               <figure><figcaption>Onde mirar</figcaption><img [src]="util.aim_position_image" alt="Onde mirar" loading="lazy" /></figure>
             </div>
-            <footer><a [routerLink]="['/map', util.map_name, util.utility_type]">Ver no mapa ↗</a><button type="button" class="favorite-button is-favorite" (click)="remove(util)" [disabled]="removingId() !== null" [attr.aria-label]="'Remover dos favoritos: ' + util.pixel_name"><span aria-hidden="true">★</span>{{ removingId() === util.id ? 'Removendo…' : 'Remover dos favoritos' }}</button></footer>
+            <footer><a [routerLink]="['/map', util.map_name]">Ver no mapa ↗</a><button type="button" class="favorite-button is-favorite" (click)="remove(util)" [disabled]="removingId() !== null" [attr.aria-label]="'Remover dos favoritos: ' + util.pixel_name"><span aria-hidden="true">★</span>{{ removingId() === util.id ? 'Removendo…' : 'Remover dos favoritos' }}</button></footer>
           </article>
         }
       </div>

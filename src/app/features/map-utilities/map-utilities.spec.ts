@@ -13,6 +13,8 @@ const utilities = [
   { ...base, id: 2, pixel_name: 'Smoke Segura', author_id: 22, author_name: 'Maria', throw_type: 'normal' },
   { ...base, id: 3, pixel_name: 'Smoke Antiga', author_name: null, throw_type: 'jumpthrow' },
   { ...base, utility_type: 'molotov', id: 4, pixel_name: 'Molotov B', author_id: 11, author_name: 'João', throw_type: 'jump-throw' },
+  { ...base, utility_type: 'flashbang', id: 5, pixel_name: 'Bang Janela', author_id: 22, author_name: 'Maria', throw_type: 'normal' },
+  { ...base, utility_type: 'he', id: 6, pixel_name: 'HE Meio', author_id: 22, author_name: 'Maria', throw_type: 'normal' },
 ];
 
 describe('Pixel listing', () => {
@@ -26,7 +28,7 @@ describe('Pixel listing', () => {
     loggedInUser.set(null);
     deletion = new Subject<void>();
     deleteRequest = vi.fn(() => deletion);
-    params = new BehaviorSubject(convertToParamMap({ mapId: 'mirage', utilityType: 'smoke' }));
+    params = new BehaviorSubject(convertToParamMap({ mapId: 'mirage' }));
     await TestBed.configureTestingModule({
       imports: [MapUtilitiesComponent],
       providers: [provideRouter([]),
@@ -51,27 +53,36 @@ describe('Pixel listing', () => {
   }
   const cards = () => [...element.querySelectorAll('.util-card__identifier')].map(card => card.textContent?.trim());
 
-  it('combines partial author, name and throw filters ignoring accents and case', async () => {
-    expect(cards()).toHaveLength(3);
+  it('shows all utilities initially and combines text filters', async () => {
+    expect(cards()).toHaveLength(6);
+    expect(element.querySelectorAll('.pixel-type-toggle input:checked')).toHaveLength(4);
     await filter('#filter-author', ' JOAO ');
     await filter('#filter-name', 'rapida');
     await filter('#filter-throw', 'jump-throw');
     expect(cards()).toEqual(['Smoke Rápida']);
-    expect(element.querySelector('[aria-live]')?.textContent).toContain('1 de 3 pixels');
+    expect(element.querySelector('[aria-live]')?.textContent).toContain('1 de 6 utilitárias');
     await filter('#filter-throw', 'normal');
     expect(cards()).toHaveLength(0);
-    expect(element.textContent).toContain('Nenhum pixel corresponde aos filtros');
+    expect(element.textContent).toContain('Nenhuma utilitária corresponde aos filtros');
   });
 
-  it('clears filters and includes old pixels without an author or with legacy throws', async () => {
-    await filter('#filter-throw', 'jumpthrow');
-    expect(cards()).toEqual(['Smoke Antiga']);
-    await filter('#filter-author', 'Maria');
-    expect(cards()).toHaveLength(0);
-    element.querySelector<HTMLButtonElement>('.pixel-filters button')!.click();
+  it('filters by checked utility types and resets to all types', async () => {
+    const molotov = element.querySelector<HTMLInputElement>('#filter-utility-molotov')!;
+    molotov.click();
     fixture.detectChanges();
     await fixture.whenStable();
-    expect(cards()).toHaveLength(3);
+    expect(cards()).toHaveLength(5);
+    expect(cards()).not.toContain('Molotov B');
+    element.querySelector<HTMLInputElement>('#filter-utility-he')!.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(cards()).toHaveLength(4);
+    expect(cards()).not.toContain('HE Meio');
+    element.querySelector<HTMLButtonElement>('.pixel-filters__summary button')!.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(cards()).toHaveLength(6);
+    expect(element.querySelectorAll('.pixel-type-toggle input:checked')).toHaveLength(4);
     expect(element.querySelector<HTMLInputElement>('#filter-author')!.value).toBe('');
   });
 
@@ -81,6 +92,7 @@ describe('Pixel listing', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     expect(cards()).toEqual(['Molotov B']);
+    expect(element.querySelectorAll('.pixel-type-toggle input:checked')).toHaveLength(1);
   });
 
   it('offers deletion only for the logged-in creator, matched by ID', () => {
@@ -106,12 +118,12 @@ describe('Pixel listing', () => {
     element.querySelector<HTMLButtonElement>('#util-card-1 .delete-confirm')!.click();
     fixture.detectChanges();
     expect(deleteRequest).toHaveBeenCalledWith('1');
-    expect(cards()).toHaveLength(3);
+    expect(cards()).toHaveLength(6);
     expect(element.querySelector<HTMLButtonElement>('.delete-confirm')!.disabled).toBe(true);
     deletion.next();
     deletion.complete();
     fixture.detectChanges();
-    expect(cards()).toEqual(['Smoke Segura', 'Smoke Antiga']);
+    expect(cards()).toEqual(['Smoke Segura', 'Smoke Antiga', 'Molotov B', 'Bang Janela', 'HE Meio']);
   });
 
   it('preserves the pixel and shows the API error when deletion is denied', () => {
@@ -122,7 +134,7 @@ describe('Pixel listing', () => {
     element.querySelector<HTMLButtonElement>('#util-card-1 .delete-confirm')!.click();
     deletion.error({ status: 403, error: { error: 'Somente o autor pode apagar este pixel.' } });
     fixture.detectChanges();
-    expect(cards()).toHaveLength(3);
+    expect(cards()).toHaveLength(6);
     expect(element.querySelector('[role="alert"]')?.textContent).toContain('Somente o autor');
     expect(element.querySelector<HTMLButtonElement>('.delete-confirm')!.disabled).toBe(false);
   });

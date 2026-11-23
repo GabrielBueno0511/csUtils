@@ -1,22 +1,22 @@
 <section class="pixel-list" id="pixel-list-page">
     <header class="pixel-list__header">
-        <a [routerLink]="['/map', mapId()]" class="pixel-list__back" id="btn-back-map">
+        <a [routerLink]="['/']" [queryParams]="{ tab: 'maps' }" class="pixel-list__back" id="btn-back-map">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="pixel-list__back-icon">
                 <path d="M19 12H5" />
                 <path d="m12 19-7-7 7-7" />
             </svg>
-            <span>Voltar</span>
+            <span>Voltar aos mapas</span>
         </a>
 
         <div class="pixel-list__title-group">
-            <p class="eyebrow">{{ mapName() }} / PIXELS</p>
-            <h1 class="pixel-list__title">{{ utilityTypeLabel() }}</h1>
-            <p class="pixel-list__subtitle">Pixels de {{ utilityTypeLabel() }} neste mapa</p>
+            <p class="eyebrow">{{ mapName() }} / UTILITÁRIAS</p>
+            <h1 class="pixel-list__title">{{ mapName() }}</h1>
+            <p class="pixel-list__subtitle">Todas as utilitárias deste mapa, organizadas por tipo.</p>
         </div>
     </header>
 
-    <section class="pixel-filters" aria-label="Filtrar pixels">
+    <section class="pixel-filters" aria-label="Filtrar utilitárias">
         <div class="pixel-filters__fields">
             <label for="filter-author">Criado por
                 <input id="filter-author" type="search" placeholder="Nome do autor" [ngModel]="authorFilter()" (ngModelChange)="authorFilter.set($event)" />
@@ -33,8 +33,20 @@
                 </select>
             </label>
         </div>
+        <fieldset class="pixel-filters__types">
+            <legend>Tipo de utilitária</legend>
+            <div class="pixel-filters__type-options">
+                @for (type of utilityTypes; track type.value) {
+                <label class="pixel-type-toggle" [class.is-selected]="selectedTypes().has(type.value)">
+                    <input type="checkbox" [id]="'filter-utility-' + type.value" [checked]="selectedTypes().has(type.value)"
+                        (change)="toggleType(type.value, $any($event.target).checked)" />
+                    <span>{{ type.label }}</span>
+                </label>
+                }
+            </div>
+        </fieldset>
         <div class="pixel-filters__summary">
-            <span aria-live="polite">{{ isLoadingUtils() ? 'Carregando pixels…' : filteredUtilities().length + ' de ' + savedUtilities().length + ' pixels' }}</span>
+            <span aria-live="polite">{{ isLoadingUtils() ? 'Carregando utilitárias…' : filteredUtilities().length + ' de ' + savedUtilities().length + ' utilitárias' }}</span>
             <button type="button" (click)="clearFilters()" [disabled]="!hasFilters()">Limpar filtros</button>
         </div>
     </section>
@@ -63,7 +75,7 @@
                     {{ favorites.isBusy(+util.id) ? 'Salvando…' : favorites.isFavorite(+util.id) ? 'Favoritado' : 'Favoritar' }}
                 </button>
                 } @else {
-                <a class="favorite-button" routerLink="/login" [queryParams]="{ returnUrl: '/map/' + mapId() + '/' + utilityType() }">☆ Entre para favoritar</a>
+                <a class="favorite-button" routerLink="/login" [queryParams]="{ returnUrl: '/map/' + mapId() }">☆ Entre para favoritar</a>
                 }
             </div>
             @if (canDelete(util)) {
@@ -96,12 +108,12 @@
         }
         } @else if (savedUtilities().length > 0) {
         <div class="pixel-list__empty">
-            <p>Nenhum pixel corresponde aos filtros. Altere a busca ou limpe os filtros.</p>
+            <p>Nenhuma utilitária corresponde aos filtros. Altere a busca ou reative os tipos.</p>
             <button type="button" class="pixel-list__create-empty-btn" (click)="clearFilters()">Limpar filtros</button>
         </div>
         } @else {
         <div class="pixel-list__empty">
-            <p>Nenhuma utilitária encontrada nesta categoria do mapa.</p>
+            <p>Nenhuma utilitária corresponde aos filtros deste mapa.</p>
             @if (auth.user()) {
             <a routerLink="/create-utility" class="pixel-list__create-empty-btn">Adicionar utilitária</a>
             } @else {

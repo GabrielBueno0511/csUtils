@@ -39,7 +39,7 @@ describe('Favorites panel', () => {
     login();
     expect(element.textContent).toContain('Pixel janela');
     expect(element.querySelectorAll('.favorite-images img')).toHaveLength(2);
-    expect(element.querySelector('footer a')?.getAttribute('href')).toBe('/map/mirage/smoke');
+    expect(element.querySelector('footer a')?.getAttribute('href')).toBe('/map/mirage');
     user.set(null);
     fixture.detectChanges();
     expect(element.querySelectorAll('.favorite-card')).toHaveLength(0);

@@ -29,8 +29,8 @@ export class MapUtilitiesComponent {
     private readonly utilityService = inject(UtilityService);
 
     protected readonly mapId = signal<string>('');
-    protected readonly utilityType = signal<UtilityType>('smoke');
-    protected readonly utilityTypeLabel = computed(() => UTILITY_TYPE_OPTIONS.find(option => option.value === this.utilityType())?.label ?? 'Utilitárias');
+    protected readonly utilityTypes = UTILITY_TYPE_OPTIONS;
+    protected readonly selectedTypes = signal<Set<UtilityType>>(new Set(UTILITY_TYPE_OPTIONS.map(option => option.value)));
     protected readonly mapName = computed(() => MAP_NAMES[this.mapId()] ?? this.mapId());
 
     protected readonly savedUtilities = signal<SavedUtility[]>([]);
@@ -40,7 +40,8 @@ export class MapUtilitiesComponent {
     protected readonly nameFilter = signal('');
     protected readonly throwFilter = signal('');
     protected readonly hasFilters = computed(() =>
-        this.authorFilter().trim() !== '' || this.nameFilter().trim() !== '' || this.throwFilter() !== '');
+        this.authorFilter().trim() !== '' || this.nameFilter().trim() !== '' || this.throwFilter() !== '' ||
+        this.selectedTypes().size !== UTILITY_TYPE_OPTIONS.length);
     protected readonly throwOptions = computed(() => {
         const options = new Map<string, string>(THROW_TYPE_OPTIONS.map(option => [option.value, option.label]));
         for (const utility of this.savedUtilities()) {
@@ -52,7 +53,9 @@ export class MapUtilitiesComponent {
         const author = this.normalize(this.authorFilter());
         const name = this.normalize(this.nameFilter());
         const throwType = this.throwFilter();
+        const selectedTypes = this.selectedTypes();
         return this.savedUtilities().filter(utility =>
+            selectedTypes.has(utility.utilityType) &&
             this.normalize(utility.authorName ?? '').includes(author) &&
             this.normalize(utility.pixelName).includes(name) &&
             (!throwType || utility.throwType === throwType));
@@ -101,6 +104,14 @@ export class MapUtilitiesComponent {
         this.authorFilter.set('');
         this.nameFilter.set('');
         this.throwFilter.set('');
+        this.selectedTypes.set(new Set(UTILITY_TYPE_OPTIONS.map(option => option.value)));
+    }
+
+    protected toggleType(type: UtilityType, checked: boolean): void {
+        const selected = new Set(this.selectedTypes());
+        if (checked) selected.add(type);
+        else selected.delete(type);
+        this.selectedTypes.set(selected);
     }
 
     private normalize(value: string): string {
@@ -111,22 +122,26 @@ export class MapUtilitiesComponent {
         this.route.paramMap.subscribe((params) => {
             const mid = params.get('mapId');
             const type = params.get('utilityType') as UtilityType | null;
-            if (mid && type && UTILITY_TYPE_OPTIONS.some(option => option.value === type)) {
+            if (mid) {
                 this.clearFilters();
                 this.pendingDelete.set(null);
                 this.deleteError.set('');
                 this.mapId.set(mid);
-                this.utilityType.set(type);
-                this.loadUtilities(mid, type);
+                this.selectedTypes.set(
+                    type && UTILITY_TYPE_OPTIONS.some(option => option.value === type)
+                        ? new Set([type])
+                        : new Set(UTILITY_TYPE_OPTIONS.map(option => option.value)),
+                );
+                this.loadUtilities(mid);
             }
         });
     }
 
-    private loadUtilities(mapId: string, utilityType: UtilityType): void {
+    private loadUtilities(mapId: string): void {
         this.isLoadingUtils.set(true);
         this.utilityService.getUtilitiesByMap(mapId).subscribe({
             next: (data) => {
-                const filtered = data.filter(u => u.utility_type === utilityType).map(u => ({
+                const filtered = data.map(u => ({
                     id: u.id ? u.id.toString() : Math.random().toString(),
                     mapId: u.map_name,
                     utilityType: u.utility_type,
