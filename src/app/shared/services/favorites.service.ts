@@ -1,9 +1,9 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, defer, finalize, tap, timeout } from 'rxjs';
+import { Observable, defer, finalize, map, tap, timeout } from 'rxjs';
 import { AuthService } from './auth.service';
 import { SupabaseService } from './supabase.service';
-import { UtilityDto } from './utility.service';
+import { normalizeLegacyUtility, UtilityDto } from './utility.service';
 
 @Injectable({ providedIn: 'root' })
 export class FavoritesService {
@@ -41,7 +41,9 @@ export class FavoritesService {
 
   list(): Observable<UtilityDto[]> {
     if (this.supabase.enabled) return defer(() => this.supabase.favorites());
-    return this.http.get<UtilityDto[]>('/api/utilities/favorites', { transferCache: false }).pipe(timeout(15000));
+    return this.http.get<UtilityDto[]>('/api/utilities/favorites', { transferCache: false }).pipe(
+      timeout(15000), map(rows => rows.map(normalizeLegacyUtility)),
+    );
   }
 
   setFavorite(id: number, favorite: boolean): Observable<void> {

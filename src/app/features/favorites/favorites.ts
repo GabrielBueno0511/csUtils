@@ -3,7 +3,7 @@ import { RouterLink } from '@angular/router';
 import { AuthService } from '../../shared/services/auth.service';
 import { FavoritesService } from '../../shared/services/favorites.service';
 import { UtilityDto } from '../../shared/services/utility.service';
-import { THROW_TYPE_OPTIONS } from '../../shared/models/spot-form.interface';
+import { THROW_TYPE_OPTIONS, UTILITY_TYPE_OPTIONS } from '../../shared/models/utility-form.interface';
 
 @Component({
   selector: 'app-favorites',
@@ -60,5 +60,9 @@ export class FavoritesComponent {
 
   protected throwLabel(type: string): string {
     return THROW_TYPE_OPTIONS.find(option => option.value === type)?.label ?? type;
+  }
+
+  protected utilityLabel(type: string): string {
+    return UTILITY_TYPE_OPTIONS.find(option => option.value === type)?.label ?? type;
   }
 }

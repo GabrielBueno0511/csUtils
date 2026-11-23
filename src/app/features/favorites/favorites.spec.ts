@@ -6,7 +6,7 @@ import { AuthService, AuthUser } from '../../shared/services/auth.service';
 import { FavoritesService } from '../../shared/services/favorites.service';
 import { FavoritesComponent } from './favorites';
 
-const saved = { id: 8, map_name: 'mirage', spot_name: 'janela', spot_id: 'Pixel janela', throw_type: 'jump-throw',
+const saved = { id: 8, map_name: 'mirage', utility_type: 'smoke', pixel_name: 'Pixel janela', throw_type: 'jump-throw',
   author_name: 'Criador', player_position_image: 'position.png', aim_position_image: 'aim.png' };
 describe('Favorites panel', () => {
   const user = signal<AuthUser | null>(null);
@@ -39,7 +39,7 @@ describe('Favorites panel', () => {
     login();
     expect(element.textContent).toContain('Pixel janela');
     expect(element.querySelectorAll('.favorite-images img')).toHaveLength(2);
-    expect(element.querySelector('footer a')?.getAttribute('href')).toBe('/map/mirage/spot/janela');
+    expect(element.querySelector('footer a')?.getAttribute('href')).toBe('/map/mirage/smoke');
     user.set(null);
     fixture.detectChanges();
     expect(element.querySelectorAll('.favorite-card')).toHaveLength(0);
@@ -58,7 +58,7 @@ describe('Favorites panel', () => {
     expect(element.querySelector<HTMLButtonElement>('.favorite-button')!.disabled).toBe(false);
   });
 
-  it('removes a favorite from the panel after success without deleting the spot', () => {
+  it('removes a favorite from the panel after success without deleting the pixel', () => {
     login();
     element.querySelector<HTMLButtonElement>('.favorite-button')!.click();
     expect(element.querySelectorAll('.favorite-card')).toHaveLength(1);

@@ -169,7 +169,7 @@ Para associar autores e favoritos, crie `users-map.json`, relacionando os IDs nu
 node --env-file=.env.import scripts/import-legacy.mjs --db ../csutil-api/flask_project/app.db --users users-map.json --apply
 ```
 
-O mapeamento é validado antes da importação. Depois de importar sem ele, uma nova execução não muda a autoria dos registros existentes. Revise também as calls antigas: a ferramenta preserva `spot_name`, e calls removidas/renomeadas precisam ser ajustadas para aparecer nas posições atuais. A chave administrativa é usada somente pelo script local; nunca pelo Angular.
+O mapeamento é validado antes da importação. Depois de importar sem ele, uma nova execução não muda a autoria dos registros existentes. As utilitárias do SQLite são importadas como Smoke, preservando o nome do pixel e as imagens. A chave administrativa é usada somente pelo script local; nunca pelo Angular.
 
 ## Testes
 

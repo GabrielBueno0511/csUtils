@@ -7,7 +7,7 @@ if (config.backend !== 'supabase') throw new Error('Configure APP_BACKEND=supaba
 const client = createClient(config.supabaseUrl, config.supabasePublishableKey,
   { auth: { persistSession: false, autoRefreshToken: false }, global: {fetch: (input,init) => fetch(input,{...init,signal:AbortSignal.timeout(20000)})} });
 const { error: utilitiesError } = await client.from('utilities')
-  .select('id,author_id,spot_id,spot_name,map_name,throw_type,player_position_image,aim_position_image,legacy_author_name,profiles(name)')
+  .select('id,author_id,pixel_name,utility_type,map_name,throw_type,player_position_image,aim_position_image,legacy_author_name,profiles(name)')
   .eq('map_name','mirage').limit(1);
 if (utilitiesError) throw new Error(`Falha ao ler utilitárias: ${utilitiesError.code} ${utilitiesError.message}`);
 console.log('Banco: leitura pública de utilitárias e relação com autores funcionando.');

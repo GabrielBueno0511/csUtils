@@ -14,7 +14,4 @@ export class AdminService {
     return defer(() => this.supabase.setAdminUserRole(userId, role));
   }
 
-  saveSpot(input: { mapId: string; spotId: string; name: string; isCustom: boolean; image: File | null; removeImage: boolean }) {
-    return defer(() => this.supabase.saveAdminSpot(input));
-  }
 }

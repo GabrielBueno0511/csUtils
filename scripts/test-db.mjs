@@ -73,13 +73,21 @@ try {
   await denied(`select public.admin_set_user_role('${alice}', 'user')`);
   await db.exec('reset role');
   await count("select count(*) n from public.profiles where id='33333333-3333-4333-8333-333333333333' and role='user'", 1);
+  await db.exec(readFileSync(new URL('../supabase/migrations/20261022000100_admin_spot_catalog.sql', import.meta.url), 'utf8'));
+  await db.exec(`insert into public.utilities(author_id,spot_id,spot_name,map_name,throw_type,player_position_image,aim_position_image)
+    values ('${alice}','Legacy Pixel','janela','mirage','normal','${alice}/old-position.png','${alice}/old-aim.png')`);
+  await db.exec(readFileSync(new URL('../supabase/migrations/20261123000100_map_utility_types.sql', import.meta.url), 'utf8'));
+  await count("select count(*) n from public.utilities where pixel_name='Legacy Pixel' and utility_type='smoke'", 1);
+  await count("select count(*) n from information_schema.columns where table_schema='public' and table_name='utilities' and column_name in ('spot_id','spot_name')", 0);
+  await count("select count(*) n from information_schema.tables where table_schema='public' and table_name='admin_spots'", 0);
+  await db.exec('delete from public.utilities');
   await role('authenticated', '33333333-3333-4333-8333-333333333333');
-  await denied(`insert into public.utilities(spot_id) values ('blocked')`);
+  await denied(`insert into public.utilities(pixel_name) values ('blocked')`);
   await role('authenticated', alice);
   await db.exec(`insert into storage.objects(bucket_id,name) values ('utility-images','${alice}/position.png'),('utility-images','${alice}/aim.png')`);
   await denied(`insert into storage.objects(bucket_id,name) values ('utility-images','${bob}/stolen.png')`);
-  const columns = 'author_id,spot_id,spot_name,map_name,throw_type,player_position_image,aim_position_image';
-  const values = `'${alice}','Smoke CT','ct','mirage','normal','${alice}/position.png','${alice}/aim.png'`;
+  const columns = 'author_id,pixel_name,utility_type,map_name,throw_type,player_position_image,aim_position_image';
+  const values = `'${alice}','Smoke CT','smoke','mirage','normal','${alice}/position.png','${alice}/aim.png'`;
   const utility = (await query(`insert into public.utilities(${columns}) values (${values}) returning id`))[0];
   await db.exec(`insert into public.utility_favorites values ('${alice}',${utility.id})`);
   await denied(`insert into public.utility_favorites values ('${bob}',${utility.id})`);
@@ -90,7 +98,7 @@ try {
   await count('select count(*) n from public.utilities', 1);
   await count('select count(*) n from public.utility_favorites', 0);
   await denied(`insert into public.utilities(${columns}) values (${values})`);
-  await denied(`insert into public.utilities(${columns}) values ('${bob}','Smoke','ct','mirage','normal','${bob}/missing.png','${bob}/missing2.png')`);
+  await denied(`insert into public.utilities(${columns}) values ('${bob}','Smoke','smoke','mirage','normal','${bob}/missing.png','${bob}/missing2.png')`);
   await db.exec(`delete from public.utilities where id=${utility.id}`);
   await count('select count(*) n from public.utilities', 1);
   await db.exec('delete from public.utility_favorites');

@@ -12,11 +12,6 @@ export const routes: Routes = [
         loadComponent: () => import('./features/admin-users/admin-users').then(m => m.AdminUsersComponent),
     },
     {
-        path: 'admin/spots',
-        canActivate: [adminGuard],
-        loadComponent: () => import('./features/admin-spots/admin-spots').then(m => m.AdminSpotsComponent),
-    },
-    {
         path: '',
         loadComponent: () =>
             import('./features/home/home').then((m) => m.HomeComponent),
@@ -24,17 +19,17 @@ export const routes: Routes = [
     {
         path: 'map/:id',
         loadComponent: () =>
-            import('./features/map-spots/map-spots').then((m) => m.MapSpotsComponent),
+            import('./features/map-utility-types/map-utility-types').then((m) => m.MapUtilityTypesComponent),
     },
     {
-        path: 'create-spot',
+        path: 'create-utility',
         canActivate: [authGuard],
         loadComponent: () =>
-            import('./features/create-spot/create-spot').then((m) => m.CreateSpotComponent),
+            import('./features/create-utility/create-utility').then((m) => m.CreateUtilityComponent),
     },
     {
-        path: 'map/:mapId/spot/:spotNameId',
+        path: 'map/:mapId/:utilityType',
         loadComponent: () =>
-            import('./features/spot-utils/spot-utils').then((m) => m.SpotUtilsComponent),
+            import('./features/map-utilities/map-utilities').then((m) => m.MapUtilitiesComponent),
     },
 ];

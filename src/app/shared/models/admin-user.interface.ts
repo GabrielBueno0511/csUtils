@@ -11,5 +11,5 @@ export interface AdminUser {
   phone_confirmed_at: string | null;
   last_sign_in_at: string | null;
   is_anonymous: boolean;
-  spots_created: number;
+  utilities_created: number;
 }

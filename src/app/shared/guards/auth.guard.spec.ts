@@ -10,12 +10,12 @@ describe('authGuard', () => {
       provide: AuthService, useValue: { restore: () => of(response) },
     }] });
     return TestBed.runInInjectionContext(() => authGuard({} as ActivatedRouteSnapshot,
-      { url: '/create-spot' } as RouterStateSnapshot)) as Observable<boolean | UrlTree>;
+      { url: '/create-utility' } as RouterStateSnapshot)) as Observable<boolean | UrlTree>;
   }
 
   it('redirects anonymous users and preserves their destination', () => {
     check(null).subscribe(result => {
-      expect(TestBed.inject(Router).serializeUrl(result as UrlTree)).toBe('/login?returnUrl=%2Fcreate-spot');
+      expect(TestBed.inject(Router).serializeUrl(result as UrlTree)).toBe('/login?returnUrl=%2Fcreate-utility');
     });
   });
 

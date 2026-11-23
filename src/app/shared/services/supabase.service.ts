@@ -7,24 +7,13 @@ import type { UtilityDto } from './utility.service';
 import type { AdminUser } from '../models/admin-user.interface';
 
 const BUCKET = 'utility-images';
-const MAP_SPOT_BUCKET = 'map-spot-images';
 const PAGE_SIZE = 500;
-
-export interface AdminSpotRecord {
-  map_id: string;
-  spot_id: string;
-  name: string;
-  image_path: string | null;
-  image_cleared: boolean;
-  is_custom: boolean;
-  image_url: string;
-}
 
 interface UtilityRow {
   id: number;
   author_id: string | null;
-  spot_id: string;
-  spot_name: string;
+  pixel_name: string;
+  utility_type: 'smoke' | 'molotov' | 'flashbang' | 'he';
   map_name: string;
   throw_type: string;
   player_position_image: string;
@@ -32,7 +21,7 @@ interface UtilityRow {
   profiles: { name: string } | null;
   legacy_author_name?: string | null;
 }
-const UTILITY_COLUMNS = 'id,author_id,spot_id,spot_name,map_name,throw_type,player_position_image,aim_position_image,legacy_author_name,profiles(name)';
+const UTILITY_COLUMNS = 'id,author_id,pixel_name,utility_type,map_name,throw_type,player_position_image,aim_position_image,legacy_author_name,profiles(name)';
 
 @Injectable({ providedIn: 'root' })
 export class SupabaseService implements OnDestroy {
@@ -139,7 +128,10 @@ export class SupabaseService implements OnDestroy {
   async adminUsers(): Promise<AdminUser[]> {
     const { data, error } = await this.client.rpc('admin_list_users');
     this.fail(error);
-    return (data ?? []) as AdminUser[];
+    return ((data ?? []) as Array<AdminUser & { spots_created: number }>).map(({ spots_created, ...user }) => ({
+      ...user,
+      utilities_created: spots_created,
+    })) as AdminUser[];
   }
 
   async setAdminUserRole(userId: string, role: 'admin' | 'user'): Promise<void> {
@@ -148,81 +140,6 @@ export class SupabaseService implements OnDestroy {
       new_role: role,
     });
     this.fail(error);
-  }
-
-  async adminSpots(): Promise<AdminSpotRecord[]> {
-    const { data, error } = await this.client.from('admin_spots')
-      .select('map_id,spot_id,name,image_path,image_cleared,is_custom').order('map_id').order('name');
-    this.fail(error);
-    return (data ?? []).map(row => ({
-      ...row,
-      image_url: row.image_path
-        ? this.client.storage.from(MAP_SPOT_BUCKET).getPublicUrl(row.image_path).data.publicUrl
-        : '',
-    })) as AdminSpotRecord[];
-  }
-
-  async saveAdminSpot(input: {
-    mapId: string;
-    spotId: string;
-    name: string;
-    isCustom: boolean;
-    image: File | null;
-    removeImage: boolean;
-  }): Promise<void> {
-    const userId = await this.requireUserId();
-    const { data: previous, error: readError } = await this.client.from('admin_spots')
-      .select('image_path,image_cleared').eq('map_id', input.mapId).eq('spot_id', input.spotId).maybeSingle();
-    this.fail(readError);
-
-    let imagePath = previous?.image_path as string | null ?? null;
-    let imageCleared = previous?.image_cleared as boolean ?? false;
-    let uploadedPath: string | null = null;
-    if (input.image) {
-      if (!['image/png', 'image/jpeg', 'image/webp'].includes(input.image.type) || input.image.size > 5 * 1024 * 1024) {
-        throw new HttpErrorResponse({ status: 400, error: { error: 'Use uma imagem PNG, JPEG ou WebP de até 5 MB.' } });
-      }
-      const extension = input.image.type === 'image/jpeg' ? 'jpg' : input.image.type.split('/')[1];
-      uploadedPath = `admin-spots/${userId}/${input.mapId}/${input.spotId}/${crypto.randomUUID()}.${extension}`;
-      const { error } = await this.client.storage.from(MAP_SPOT_BUCKET).upload(uploadedPath, input.image, {
-        contentType: input.image.type, upsert: false,
-      });
-      this.fail(error);
-      imagePath = uploadedPath;
-      imageCleared = false;
-    } else if (input.removeImage) {
-      imagePath = null;
-      imageCleared = true;
-    }
-
-    const values = {
-      map_id: input.mapId,
-      spot_id: input.spotId,
-      name: input.name.trim(),
-      image_path: imagePath,
-      image_cleared: imageCleared,
-      is_custom: input.isCustom,
-      updated_at: new Date().toISOString(),
-    };
-    const request = previous
-      ? this.client.from('admin_spots').update({
-          name: values.name,
-          image_path: values.image_path,
-          image_cleared: values.image_cleared,
-          updated_at: values.updated_at,
-        }).eq('map_id', input.mapId).eq('spot_id', input.spotId)
-      : this.client.from('admin_spots').insert(values);
-    const { error } = await request;
-    if (error) {
-      if (uploadedPath) await this.removeMapSpotImage(uploadedPath);
-      this.fail(error);
-    }
-    if (uploadedPath && previous?.image_path) await this.removeMapSpotImage(previous.image_path as string);
-  }
-
-  private async removeMapSpotImage(path: string): Promise<void> {
-    const { error } = await this.client.storage.from(MAP_SPOT_BUCKET).remove([path]);
-    if (error) console.warn('Não foi possível remover uma imagem de spot substituída.');
   }
 
   private async requireUserId(): Promise<string> {
@@ -234,7 +151,7 @@ export class SupabaseService implements OnDestroy {
 
   private dto(row: UtilityRow): UtilityDto {
     return { id: row.id, author_id: row.author_id, author_name: row.profiles?.name ?? row.legacy_author_name ?? null,
-      spot_id: row.spot_id, spot_name: row.spot_name, map_name: row.map_name, throw_type: row.throw_type,
+      pixel_name: row.pixel_name, utility_type: row.utility_type, map_name: row.map_name, throw_type: row.throw_type,
       player_position_image: this.client.storage.from(BUCKET).getPublicUrl(row.player_position_image).data.publicUrl,
       aim_position_image: this.client.storage.from(BUCKET).getPublicUrl(row.aim_position_image).data.publicUrl };
   }
@@ -263,7 +180,7 @@ export class SupabaseService implements OnDestroy {
         uploaded.push(path);
       }
       const { data, error } = await this.client.from('utilities').insert({
-        author_id: userId, spot_id: utility.spot_id, spot_name: utility.spot_name,
+        author_id: userId, pixel_name: utility.pixel_name, utility_type: utility.utility_type,
         map_name: utility.map_name, throw_type: utility.throw_type,
         player_position_image: uploaded[0], aim_position_image: uploaded[1],
       }).select(UTILITY_COLUMNS).single();

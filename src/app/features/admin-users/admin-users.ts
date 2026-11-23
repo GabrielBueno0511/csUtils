@@ -17,7 +17,7 @@ export class AdminUsersComponent implements OnInit {
   protected readonly savingId = signal<string | null>(null);
   protected readonly error = signal('');
   protected readonly adminCount = computed(() => this.users().filter(user => user.role === 'admin').length);
-  protected readonly spotCount = computed(() => this.users().reduce((sum, user) => sum + Number(user.spots_created), 0));
+  protected readonly utilityCount = computed(() => this.users().reduce((sum, user) => sum + Number(user.utilities_created), 0));
 
   ngOnInit(): void { this.load(); }
 

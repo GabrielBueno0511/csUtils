@@ -1,0 +1,25 @@
+<section class="map-types" id="map-types-page">
+    <header class="map-types__header">
+        <a routerLink="/" class="map-types__back">← <span>Voltar aos mapas</span></a>
+        <div class="map-types__title-group">
+            <p class="eyebrow">ARQUIVO TÁTICO / UTILITÁRIAS</p>
+            <h1 class="map-types__title">{{ mapName() }}</h1>
+            <p class="map-types__subtitle">Escolha o tipo de utilitária para ver os pixels deste mapa.</p>
+        </div>
+    </header>
+
+    @if (mapName()) {
+    <div class="map-types__grid">
+        @for (type of utilityTypes; track type.value) {
+        <a class="utility-type-card" [routerLink]="['/map', mapId(), type.value]" [id]="'utility-type-' + type.value">
+            <span class="utility-type-card__index">UTILITÁRIA / {{ ($index + 1).toString().padStart(2, '0') }}</span>
+            <strong>{{ type.label }}</strong>
+            <span>{{ type.description }}</span>
+            <span class="utility-type-card__arrow" aria-hidden="true">↗</span>
+        </a>
+        }
+    </div>
+    } @else {
+    <div class="map-types__empty"><p>Mapa não encontrado.</p><a routerLink="/">Voltar para os mapas</a></div>
+    }
+</section>

@@ -48,7 +48,7 @@ for (const row of selected) {
   const position = await image(row.player_position_image,`${folder}/import-${row.id}-position`);
   const aim = await image(row.aim_position_image,`${folder}/import-${row.id}-aim`);
   const { error } = await client.from('utilities').insert({ legacy_id:row.id, author_id:owner,
-    legacy_author_name:row.legacy_author_name, spot_id:row.spot_id, spot_name:row.spot_name,
+    legacy_author_name:row.legacy_author_name, pixel_name:row.spot_id, utility_type:'smoke',
     map_name:row.map_name, throw_type:row.throw_type, player_position_image:position, aim_position_image:aim });
   check(error);
 }

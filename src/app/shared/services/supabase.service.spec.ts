@@ -2,11 +2,12 @@ import { TestBed } from '@angular/core/testing';
 import { createClient } from '@supabase/supabase-js';
 import { APP_SETTINGS } from '../config/app-settings';
 import { SupabaseService } from './supabase.service';
+import type { UtilityDto } from './utility.service';
 
 vi.mock('@supabase/supabase-js', () => ({ createClient: vi.fn() }));
 const user = { id: '11111111-1111-4111-8111-111111111111', email: 'player@example.com', user_metadata: { name: 'Jogador' } };
 const png = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScLbtAAAAABJRU5ErkJggg==';
-const utility = { spot_id: 'Smoke CT', spot_name: 'ct', map_name: 'mirage', throw_type: 'normal', player_position_image: png, aim_position_image: png };
+const utility: UtilityDto = { pixel_name: 'Smoke CT', utility_type: 'smoke', map_name: 'mirage', throw_type: 'normal', player_position_image: png, aim_position_image: png };
 
 describe('SupabaseService', () => {
   let service: SupabaseService;
@@ -73,18 +74,11 @@ describe('SupabaseService', () => {
     expect(storage.remove).toHaveBeenCalledWith(['owner/position.png','owner/aim.png']);
   });
 
-  it('inserts new admin spots into the shared catalog', async () => {
-    await service.saveAdminSpot({ mapId: 'dust2', spotId: 'altar', name: 'Altar', isCustom: true, image: null, removeImage: false });
+  it('saves a pixel with its utility type directly on the map record', async () => {
+    query.single.mockResolvedValue({ data: null, error: { code: '42501', message: 'denied' } });
+    await expect(service.createUtility({ ...utility, utility_type: 'molotov' })).rejects.toBeDefined();
     expect(query.insert).toHaveBeenCalledWith(expect.objectContaining({
-      map_id: 'dust2', spot_id: 'altar', name: 'Altar', is_custom: true,
+      pixel_name: 'Smoke CT', utility_type: 'molotov', map_name: 'mirage',
     }));
-    expect(query.update).not.toHaveBeenCalled();
-  });
-
-  it('updates only a spot name and image fields, leaving its map and id fixed', async () => {
-    query.maybeSingle.mockResolvedValue({ data: { image_path: null, image_cleared: false }, error: null });
-    await service.saveAdminSpot({ mapId: 'dust2', spotId: 'altar', name: 'Bomb/Altar', isCustom: true, image: null, removeImage: false });
-    expect(query.update).toHaveBeenCalledWith(expect.objectContaining({ name: 'Bomb/Altar', image_path: null, image_cleared: false }));
-    expect(query.insert).not.toHaveBeenCalled();
   });
 });

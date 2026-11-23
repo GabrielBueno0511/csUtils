@@ -23,7 +23,7 @@ details summary { cursor: pointer; }
 details pre { max-width: 300px; max-height: 180px; overflow: auto; padding: 10px; color: var(--text-primary); background: var(--bg-primary); white-space: pre-wrap; overflow-wrap: anywhere; }
 td select { min-width: 100px; padding: 8px 10px; color: var(--text-primary); background: var(--bg-primary); border: 1px solid var(--card-border); border-radius: 4px; }
 td select:disabled { opacity: .65; }
-.spot-count { color: var(--accent-secondary); font-size: 1.1rem; }
+.pixel-count { color: var(--accent-secondary); font-size: 1.1rem; }
 .admin-users__error, .admin-users__notice { padding: 16px; border: 1px solid var(--card-border); background: var(--bg-secondary); }
 .admin-users__error { color: var(--danger); }
 .admin-users__notice { color: var(--text-secondary); }

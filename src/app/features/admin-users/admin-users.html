@@ -11,7 +11,7 @@
   <section class="admin-users__stats" aria-label="Resumo de usuários">
     <article><span>Contas</span><strong>{{ users().length }}</strong></article>
     <article><span>Administradores</span><strong>{{ adminCount() }}</strong></article>
-    <article><span>Spots criados</span><strong>{{ spotCount() }}</strong></article>
+    <article><span>Pixels criados</span><strong>{{ utilityCount() }}</strong></article>
   </section>
 
   @if (error()) { <p class="admin-users__error" role="alert">{{ error() }}</p> }
@@ -23,7 +23,7 @@
     <div class="admin-users__table-wrap">
       <table>
         <thead>
-          <tr><th>Conta</th><th>Contato</th><th>Cadastro</th><th>Último acesso</th><th>Spots</th><th>Papel</th></tr>
+          <tr><th>Conta</th><th>Contato</th><th>Cadastro</th><th>Último acesso</th><th>Pixels</th><th>Papel</th></tr>
         </thead>
         <tbody>
           @for (user of users(); track user.id) {
@@ -43,7 +43,7 @@
                 <small>Atualizado: {{ user.updated_at | date:'dd/MM/yyyy HH:mm' }}</small>
               </td>
               <td>{{ user.last_sign_in_at ? (user.last_sign_in_at | date:'dd/MM/yyyy HH:mm') : 'Nunca' }}</td>
-              <td><strong class="spot-count">{{ user.spots_created }}</strong></td>
+              <td><strong class="pixel-count">{{ user.utilities_created }}</strong></td>
               <td>
                 <label class="visually-hidden" [for]="'role-' + user.id">Papel de {{ user.name }}</label>
                 <select [id]="'role-' + user.id" [value]="user.role" (change)="changeRole(user, $event)" [disabled]="savingId() !== null">

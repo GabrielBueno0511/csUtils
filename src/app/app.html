@@ -9,7 +9,6 @@
       <span>Olá, {{ user.name }}</span>
       @if (auth.isAdmin()) {
         <a routerLink="/admin/users">Usuários</a>
-        <a routerLink="/admin/spots">Spots</a>
       }
       <button type="button" (click)="logout()" [disabled]="logoutBusy()">{{ logoutBusy() ? 'Saindo…' : 'Sair' }}</button>
     } @else {
